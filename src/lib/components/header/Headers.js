@@ -9,13 +9,18 @@ import './Header.css';
 export class HeaderItem extends PureComponent {
   constructor(props) {
     super(props);
-    console.log(props);
+    this.didMounted = false;
   }
+
+  
+
   render() {
-    if(this.props.label == moment().month())
+    if(this.props.number == 0)
     {
+      console.log(this.props.number);
+      this.didMounted = true;
       return (
-        <div
+        <div id="currentDate"
           style={{
             background: "red",
             display: 'flex',
@@ -170,7 +175,7 @@ export default class Header extends PureComponent {
         if (bottom == 'shorttime' || bottom == 'fulltime') {
           result.bottom.push(this.renderTime(box.left, box.width, bottom, i));
         } else {
-          result.bottom.push(<HeaderItem key={i} left={box.left} width={box.width} label={currentBottom} />);
+          result.bottom.push(<HeaderItem key={i} number={i} left={box.left} width={box.width} label={currentBottom} />);
         }
       }
     }

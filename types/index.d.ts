@@ -20,6 +20,9 @@ type Task = {
     end: Date;
     name: string;
     color?: string;
+    predecessors: number[];
+    succesors: number[];
+    duration: number;
 };
 
 type Link = {
