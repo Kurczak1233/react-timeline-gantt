@@ -29,11 +29,11 @@ export class TaskRow extends Component {
   // };
 
   changeStartDate = (value) => {
-      this.props.onUpdateTask(this.props.item, { start: new Date(value)})
+      this.props.onUpdateTask(this.props.item, { start: new Date(value), end: this.props.item.end})
   };
 
   changeEndDate = (value) => {
-      this.props.onUpdateTask(this.props.item, { end: value });
+    this.props.onUpdateTask(this.props.item, { start: this.props.item.start, end: new Date(value)})
   };
 
 
