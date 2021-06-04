@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import Config from 'libs/helpers/config/Config';
 import ContentEditable from 'libs/components/common/ContentEditable';
+import { createPopper } from '@popperjs/core';
 
 export class VerticalLine extends Component {
   constructor(props) {
     super(props);
-  }
+    }
   render() {
     return <div className="timeLine-main-data-verticalLine" style={{ left: this.props.left }} />;
   }
@@ -21,12 +22,6 @@ export class TaskRow extends Component {
       this.props.onUpdateTask(this.props.item, { name: value, start: this.props.item.start, end: this.props.item.end });
     }
   };
-  // onUpdateTask = (item, props) => {
-  //   item.start = props.start;
-  //   item.end = props.end;
-  //   this.setState({ data: [...this.state.data] });
-  //   console.log(`Update Item ${item}`);
-  // };
 
   changeStartDate = (value) => {
       this.props.onUpdateTask(this.props.item, { start: new Date(value), end: this.props.item.end})
@@ -35,7 +30,13 @@ export class TaskRow extends Component {
   changeEndDate = (value) => {
     this.props.onUpdateTask(this.props.item, { start: this.props.item.start, end: new Date(value)})
   };
+//this.props.onFinishCreateLink(this.props.item, position); onClick ta funkcja?
 
+  createToolTip = () => {
+    const tooltip = document.querySelector('#tooltip').removeAttribute("hidden");
+    const button = document.querySelector('#addChildButton');
+    createPopper(button, tooltip);
+  }
 
   render() {
     return (
@@ -59,8 +60,13 @@ export class TaskRow extends Component {
             <ContentEditable width="100%" start={this.props.item.start} value={new Date(this.props.item.start).toLocaleDateString("en-US")} index={this.props.index} onChange={this.changeStartDate} />
             <ContentEditable width="100%" end={this.props.item.end} value={new Date(this.props.item.end).toLocaleDateString("en-US")} index={this.props.index} onChange={this.changeEndDate} />
             <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
-              <button className="no-decoration"><i className="fas fa-plus color-green"></i></button>
-              <button className="no-decoration"><i className="fas fa-search color-blue"></i></button>
+              <button id="addChildButton" className="no-decoration" onClick={this.createToolTip}>
+                <i className="fas fa-plus color-green" />
+              </button>
+              <div id="tooltip" hidden role="tooltip">My tooltip</div>
+              <button className="no-decoration">
+                <i className="fas fa-search color-blue" />
+              </button>
             </div>
             <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
               <button className="no-decoration"><i className="fas fa-plus color-green"></i></button>

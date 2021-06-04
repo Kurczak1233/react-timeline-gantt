@@ -127,6 +127,13 @@ class App extends Component {
   onUpdateTask = (item, props) => {
     item.start = props.start;
     item.end = props.end;
+        const startingDate = new Date(item.start);
+        let dayCount = 0;
+        while (item.end > startingDate) {
+          dayCount++;
+          startingDate.setDate(startingDate.getDate() + 1);
+        }
+    item.duration = dayCount;
     this.setState({ data: [...this.state.data] });
     console.log(`Update Item ${item}`);
   };
@@ -237,7 +244,7 @@ class App extends Component {
             >
               Year
             </div>
-            <div
+            {/* <div
               className="mode-container-item mode-container-item-editable-toggle"
               style={{ marginLeft: '20px' }}
               onClick={() => {
@@ -247,7 +254,7 @@ class App extends Component {
               }}
             >
               {this.state.nonEditableName ? 'Enable' : 'Disable'} name edition
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="time-line-container">

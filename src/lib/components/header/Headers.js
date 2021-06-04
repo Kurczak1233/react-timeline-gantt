@@ -11,22 +11,44 @@ export class HeaderItem extends PureComponent {
     super(props);
   }
   render() {
-    return (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderLeft: 'solid 1px white',
-          position: 'absolute',
-          height: 20,
-          left: this.props.left,
-          width: this.props.width
-        }}
-      >
-        <div>{this.props.label}</div>
-      </div>
-    );
+    if(this.props.label == moment().date())
+    {
+      return (
+        <div
+          style={{
+            background: "red",
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderLeft: 'solid 1px white',
+            position: 'absolute',
+            height: 100,
+            left: this.props.left,
+            width: this.props.width
+          }}
+        >
+          <div>{this.props.label}</div>
+        </div>
+      );
+    }
+    else{
+      return (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderLeft: 'solid 1px white',
+            position: 'absolute',
+            height: 20,
+            left: this.props.left,
+            width: this.props.width
+          }}
+        >
+          <div>{this.props.label}</div>
+        </div>
+      );
+    }
   }
 }
 
