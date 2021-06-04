@@ -50,14 +50,14 @@ export class TaskRow extends Component {
       >
         {this.props.nonEditable ? (
           <div tabIndex={this.props.index} style={{ width: '100%' }}>
-            {this.props.label}
+            {this.props.label}   
           </div>
         ) : (
           <div className="timeLine-side--header-wrapper">
             <div className="timeLine-side--header-wrapper--column-width-70 ">{this.props.item.id.substring(0,1)}</div>
             <ContentEditable width="100%" value={this.props.item.name} index={this.props.index} onChange={this.onChange} />
-            <ContentEditable width="100%" start={this.props.item.start} value={new Date(this.props.item.start).toLocaleDateString()} index={this.props.index} onChange={this.changeStartDate} />
-            <ContentEditable width="100%" end={this.props.item.end} value={new Date(this.props.item.end).toLocaleDateString()} index={this.props.index} onChange={this.changeEndDate} />
+            <ContentEditable width="100%" start={this.props.item.start} value={new Date(this.props.item.start).toLocaleDateString("en-US")} index={this.props.index} onChange={this.changeStartDate} />
+            <ContentEditable width="100%" end={this.props.item.end} value={new Date(this.props.item.end).toLocaleDateString("en-US")} index={this.props.index} onChange={this.changeEndDate} />
             <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
               <button className="no-decoration"><i className="fas fa-plus color-green"></i></button>
               <button className="no-decoration"><i className="fas fa-search color-blue"></i></button>
