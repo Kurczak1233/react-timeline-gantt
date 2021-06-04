@@ -241,3 +241,21 @@
   align-items: center;
   cursor: pointer;
 }
+
+/* Custom  */
+
+.timeLine-side--custom-menu {
+  background-color: #fbf9f9;
+  color: red;
+}
+.timeLine-side--custom-header {
+  background-color: rgb(51, 51, 51);
+    border-bottom: 1px solid silver;
+    color: white;
+    text-align: center;
+    height: 60px;
+    flex: 0 0 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

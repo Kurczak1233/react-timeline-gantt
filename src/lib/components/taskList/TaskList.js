@@ -39,7 +39,10 @@ export class TaskRow extends Component {
             {this.props.label}
           </div>
         ) : (
-          <ContentEditable value={this.props.label} index={this.props.index} onChange={this.onChange} />
+          <React.Fragment>
+            <span>test</span>
+            <ContentEditable value={this.props.label} index={this.props.index} onChange={this.onChange} />
+          </React.Fragment>
         )}
       </div>
     );
@@ -87,16 +90,18 @@ export default class TaskList extends Component {
     let data = this.props.data ? this.props.data : [];
     this.containerStyle = this.getContainerStyle(data.length);
     return (
-      <div className="timeLine-side">
-        <div className="timeLine-side-title" style={Config.values.taskList.title.style}>
-          <div>{Config.values.taskList.title.label}</div>
-        </div>
-        <div ref="taskViewPort" className="timeLine-side-task-viewPort" onScroll={this.doScroll}>
-          <div className="timeLine-side-task-container" style={this.containerStyle}>
-            {this.renderTaskRow(data)}
+      <React.Fragment>
+        <div className="timeLine-side">
+          <div className="timeLine-side-title" style={Config.values.taskList.title.style}>
+            <div>Task menu</div>
+          </div>
+          <div ref="taskViewPort" className="timeLine-side-task-viewPort" onScroll={this.doScroll}>
+            <div className="timeLine-side-task-container" style={this.containerStyle}>
+              {this.renderTaskRow(data)}
+            </div>
           </div>
         </div>
-      </div>
+      </React.Fragment>
     );
   }
 }

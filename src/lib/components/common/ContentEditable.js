@@ -62,7 +62,7 @@ export default class ContentEditable extends Component {
       <input
         ref="textInput"
         onBlur={this.onBlur}
-        style={{ width: '100%', outlineColor: 'black', outlineStyle: 'oinset' }}
+        style={{ width: '30%', outlineColor: 'black', outlineStyle: 'oinset' }}
         type="text"
         name="name"
         value={this.state.value}
