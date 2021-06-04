@@ -176,12 +176,16 @@ class App extends Component {
 
   addTask = () => {
     let newTask = {
-      id: this.state.data.length + 1,
+      id: `${this.state.data.length}`,
       start: new Date(),
       end: this.getRandomDate(),
       name: 'New Task',
-      color: this.getRandomColor()
+      color: this.getRandomColor(),
+      predecessors: [],
+      succesors: [],
+      duration: null,
     };
+    console.log(newTask);
     this.setState({ data: [newTask, ...this.state.data] });
   };
 
@@ -244,7 +248,7 @@ class App extends Component {
             >
               Year
             </div>
-            {/* <div
+            <div
               className="mode-container-item mode-container-item-editable-toggle"
               style={{ marginLeft: '20px' }}
               onClick={() => {
@@ -253,8 +257,8 @@ class App extends Component {
                 });
               }}
             >
-              {this.state.nonEditableName ? 'Enable' : 'Disable'} name edition
-            </div> */}
+              {this.state.nonEditableName ? 'Enable' : 'Disable'} dependencies menu
+            </div>
           </div>
         </div>
         <div className="time-line-container">

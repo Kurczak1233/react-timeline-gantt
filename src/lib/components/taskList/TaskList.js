@@ -50,9 +50,25 @@ export class TaskRow extends Component {
         onClick={(e) => this.props.onSelectItem(this.props.item)}
       >
         {this.props.nonEditable ? (
-          <div tabIndex={this.props.index} style={{ width: '100%' }}>
-            {this.props.label}   
+          <div className="timeLine-side--header-wrapper">
+          <div className="timeLine-side--header-wrapper--column-width-70 ">{this.props.item.id.substring(0,1)}</div>
+          <ContentEditable width="100%" value={this.props.item.name} index={this.props.index} onChange={this.onChange} />
+          <ContentEditable width="100%" start={this.props.item.start} value={new Date(this.props.item.start).toLocaleDateString("en-US")} index={this.props.index} onChange={this.changeStartDate} />
+          <ContentEditable width="100%" end={this.props.item.end} value={new Date(this.props.item.end).toLocaleDateString("en-US")} index={this.props.index} onChange={this.changeEndDate} />
+          {/* <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
+            <button id="addChildButton" className="no-decoration" onClick={this.createToolTip}>
+              <i className="fas fa-plus color-green" />
+            </button>
+            <div id="tooltip" hidden role="tooltip">My tooltip</div>
+            <button className="no-decoration">
+              <i className="fas fa-search color-blue" />
+            </button>
           </div>
+          <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
+            <button className="no-decoration"><i className="fas fa-plus color-green"></i></button>
+            <button className="no-decoration"><i className="fas fa-search color-blue"></i></button>
+          </div> */}
+        </div>
         ) : (
           <div className="timeLine-side--header-wrapper">
             <div className="timeLine-side--header-wrapper--column-width-70 ">{this.props.item.id.substring(0,1)}</div>
@@ -119,9 +135,27 @@ export default class TaskList extends Component {
   render() {
     let data = this.props.data ? this.props.data : [];
     this.containerStyle = this.getContainerStyle(data.length);
+    
     return (
+      
       <React.Fragment>
+        {this.props.nonEditable ? (
         <div className="timeLine-side">
+        <div className="timeLine-side-title" style={Config.values.taskList.title.style}>
+          <div className="timeLine-side-title--custom-style">Task menu</div>
+            <div className="timeLine-side--header-wrapper">
+              <div className="timeLine-side--header-wrapper--column-width-70">Id</div>
+              <div className="styleTest">Name</div>
+              <div className="styleTest">From date</div>
+              <div className="styleTest">To date</div>
+            </div>
+        </div>
+        <div ref="taskViewPort" className="timeLine-side-task-viewPort" onScroll={this.doScroll}>
+          <div className="timeLine-side-task-container" style={this.containerStyle}>
+            {this.renderTaskRow(data)}
+          </div>
+        </div>
+      </div>) : ( <div className="timeLine-side">
           <div className="timeLine-side-title" style={Config.values.taskList.title.style}>
             <div className="timeLine-side-title--custom-style">Task menu</div>
               <div className="timeLine-side--header-wrapper">
@@ -139,6 +173,7 @@ export default class TaskList extends Component {
             </div>
           </div>
         </div>
+        )}
       </React.Fragment>
     );
   }

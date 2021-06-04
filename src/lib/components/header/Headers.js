@@ -9,9 +9,10 @@ import './Header.css';
 export class HeaderItem extends PureComponent {
   constructor(props) {
     super(props);
+    console.log(props);
   }
   render() {
-    if(this.props.label == moment().date())
+    if(this.props.label == moment().month())
     {
       return (
         <div
@@ -22,7 +23,7 @@ export class HeaderItem extends PureComponent {
             alignItems: 'center',
             borderLeft: 'solid 1px white',
             position: 'absolute',
-            height: 100,
+            height: 20,
             left: this.props.left,
             width: this.props.width
           }}
