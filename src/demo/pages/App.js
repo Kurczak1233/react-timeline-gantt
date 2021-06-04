@@ -5,72 +5,87 @@ import './App.css';
 
 const config = {
   header: {
-    month: {
-      dateFormat: 'MMMM  YYYY',
+    top: {
       style: {
-        background: 'linear-gradient( grey, black)',
-        textShadow: '0.5px 0.5px black',
-        fontSize: 12
-      }
+        background: "linear-gradient( grey, black)",
+        textShadow: "0.5px 0.5px black",
+        fontSize: 12,
+      },
     },
-    dayOfWeek: {
+    middle: {
       style: {
-        background: 'linear-gradient( orange, grey)',
-        fontSize: 9
-      }
-    },
-    dayTime: {
-      style: {
-        background: 'linear-gradient( grey, black)',
+        background: "linear-gradient( orange, grey)",
         fontSize: 9,
-        color: 'orange'
+      },
+    },
+    bottom: {
+      style: {
+        background: "linear-gradient( grey, black)",
+        fontSize: 9,
+        color: "orange",
       },
       selectedStyle: {
-        background: 'linear-gradient( #d011dd ,#d011dd)',
-        fontWeight: 'bold',
-        color: 'white'
-      }
-    }
-  },
-  taskList: {
-    title: {
-      label: 'Task Todo',
-      style: {
-        background: 'linear-gradient( grey, black)'
-      }
-    },
-    task: {
-      style: {
-        backgroundColor: 'grey',
-        color: 'white'
-      }
-    },
-    verticalSeparator: {
-      style: {
-        backgroundColor: '#fbf9f9'
+        background: "linear-gradient( #d011dd ,#d011dd)",
+        fontWeight: "bold",
+        color: "white",
       },
-      grip: {
-        style: {
-          backgroundColor: 'red'
-        }
-      }
-    }
+    },
   },
+
+  // taskList: {
+  //   //This part is somehow bugged. Bug occurs when you click on gannt -> other breadcrumb -> gannt.
+  //   title: {
+  //     label: "Task Todo",
+  //     style: {
+  //       background: "linear-gradient( grey, black)",
+  //     },
+  //   },
+  //   task: {
+  //     style: {
+  //       backgroundColor: "grey",
+  //       color: "white",
+  //     },
+  //   },
+
+  //   verticalSeparator: {
+  //     style: {
+  //       backgroundColor: "#fbf9f9",
+  //     },
+  //     grip: {
+  //       style: {
+  //         backgroundColor: "red",
+  //       },
+  //     },
+  //   },
+  // },
+
   dataViewPort: {
     rows: {
       style: {
-        backgroundColor: 'white',
-        borderBottom: 'solid 0.5px silver'
-      }
+        backgroundColor: "white",
+        borderBottom: "solid 0.5px silver",
+      },
     },
     task: {
       showLabel: true,
       style: {
-        borderRadius: 1,
-        boxShadow: '2px 2px 8px #888888'
-      }
-    }
-  }
+        whiteSpace: "nowrap",
+        position: "absolute",
+        borderRadius: 14,
+        color: "white",
+        textAlign: "center",
+        backgroundColor: "grey",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-around",
+      },
+      selectedStyle: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-around",
+      },
+    },
+  },
 };
 
 class App extends Component {
@@ -237,7 +252,7 @@ class App extends Component {
         </div>
         <div className="time-line-container">
           <TimeLine
-            // config={config}
+            config={config}
             data={this.state.data}
             links={this.state.links}
             onHorizonChange={this.onHorizonChange}

@@ -76,6 +76,7 @@
   ],
   "homepage": "https://github.com/guiqui/react-timeline-gantt",
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.3",
     "jest-config": "^25.1.0",
     "moment": "^2.24.0",
     "opencollective": "^1.0.3",

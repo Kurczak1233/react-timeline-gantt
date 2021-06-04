@@ -35,7 +35,7 @@ class TimeLine extends Component {
       nowposition: 0,
       startRow: 0, //
       endRow: 10,
-      sideStyle: { width: 200 },
+      sideStyle: { width: 400 },
       scrollLeft: 0,
       scrollTop: 0,
       numVisibleRows: 40,
@@ -318,10 +318,7 @@ class TimeLine extends Component {
   render() {
     this.checkMode();
     this.checkNeeeData();
-    console.log('On render')
-    if(!this.state.size){
-      console.log(this.state)
-    }
+    console.log(this.state.data)
     return (
       <div className="timeLine">
         <div className="timeLine-side-main" style={this.state.sideStyle}>

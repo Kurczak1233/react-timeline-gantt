@@ -6,7 +6,6 @@ export class VerticalLine extends Component {
   constructor(props) {
     super(props);
   }
-
   render() {
     return <div className="timeLine-main-data-verticalLine" style={{ left: this.props.left }} />;
   }
@@ -19,9 +18,24 @@ export class TaskRow extends Component {
 
   onChange = (value) => {
     if (this.props.onUpdateTask) {
-      this.props.onUpdateTask(this.props.item, { name: value });
+      this.props.onUpdateTask(this.props.item, { name: value, start: this.props.item.start, end: this.props.item.end });
     }
   };
+  // onUpdateTask = (item, props) => {
+  //   item.start = props.start;
+  //   item.end = props.end;
+  //   this.setState({ data: [...this.state.data] });
+  //   console.log(`Update Item ${item}`);
+  // };
+
+  changeStartDate = (value) => {
+      this.props.onUpdateTask(this.props.item, { start: new Date(value)})
+  };
+
+  changeEndDate = (value) => {
+      this.props.onUpdateTask(this.props.item, { end: value });
+  };
+
 
   render() {
     return (
@@ -39,10 +53,20 @@ export class TaskRow extends Component {
             {this.props.label}
           </div>
         ) : (
-          <React.Fragment>
-            <span>test</span>
-            <ContentEditable value={this.props.label} index={this.props.index} onChange={this.onChange} />
-          </React.Fragment>
+          <div className="timeLine-side--header-wrapper">
+            <div className="timeLine-side--header-wrapper--column-width-70 ">{this.props.item.id.substring(0,1)}</div>
+            <ContentEditable width="100%" value={this.props.item.name} index={this.props.index} onChange={this.onChange} />
+            <ContentEditable width="100%" start={this.props.item.start} value={new Date(this.props.item.start).toLocaleDateString()} index={this.props.index} onChange={this.changeStartDate} />
+            <ContentEditable width="100%" end={this.props.item.end} value={new Date(this.props.item.end).toLocaleDateString()} index={this.props.index} onChange={this.changeEndDate} />
+            <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
+              <button className="no-decoration"><i className="fas fa-plus color-green"></i></button>
+              <button className="no-decoration"><i className="fas fa-search color-blue"></i></button>
+            </div>
+            <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
+              <button className="no-decoration"><i className="fas fa-plus color-green"></i></button>
+              <button className="no-decoration"><i className="fas fa-search color-blue"></i></button>
+            </div>
+          </div>
         )}
       </div>
     );
@@ -93,7 +117,15 @@ export default class TaskList extends Component {
       <React.Fragment>
         <div className="timeLine-side">
           <div className="timeLine-side-title" style={Config.values.taskList.title.style}>
-            <div>Task menu</div>
+            <div className="timeLine-side-title--custom-style">Task menu</div>
+              <div className="timeLine-side--header-wrapper">
+                <div className="timeLine-side--header-wrapper--column-width-70">Id</div>
+                <div className="styleTest">Name</div>
+                <div className="styleTest">From date</div>
+                <div className="styleTest">To date</div>
+                <div className="timeLine-side--header-wrapper--column-width-70">Next</div>
+                <div className="timeLine-side--header-wrapper--column-width-70">Previous</div>
+              </div>
           </div>
           <div ref="taskViewPort" className="timeLine-side-task-viewPort" onScroll={this.doScroll}>
             <div className="timeLine-side-task-container" style={this.containerStyle}>

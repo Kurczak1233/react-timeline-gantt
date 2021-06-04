@@ -7,6 +7,7 @@ export default class ContentEditable extends Component {
       editing: false,
       value: this.props.value
     };
+    this.width = this.props.width
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -43,7 +44,7 @@ export default class ContentEditable extends Component {
 
   renderDiv = () => {
     return (
-      <div tabIndex={this.props.index} onClick={this.onFocus} onFocus={this.onFocus} style={{ width: '100%' }}>
+      <div tabIndex={this.props.index} className="timeLine-side--text-no-wrap" onClick={this.onFocus} onFocus={this.onFocus} style={{ width: this.width }}>
         {' '}
         {this.state.value}
       </div>
@@ -62,7 +63,8 @@ export default class ContentEditable extends Component {
       <input
         ref="textInput"
         onBlur={this.onBlur}
-        style={{ width: '30%', outlineColor: 'black', outlineStyle: 'oinset' }}
+        className="timeLine-side--text-no-wrap"
+        style={{ outlineColor: 'black', outlineStyle: 'oinset' }}
         type="text"
         name="name"
         value={this.state.value}
