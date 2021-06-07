@@ -28,6 +28,7 @@ export class TaskRow extends Component {
       taskToCreate: null,
       options: [],
       selectedOption: null,
+      isMenuOpened: false,
     }
   }
 
@@ -79,28 +80,35 @@ export class TaskRow extends Component {
   }
 
   handleSuccessorIdChange = (event) => {
-    this.setState({sentSuccessorId: event.target.value});
+    this.setState({sentSuccessorId: event.value});
   }
    
   handlePredecessorIdChange = (event) => {
-    this.setState({sentPredecessorId: event.target.value});
+    this.setState({sentPredecessorId: event.value});
   }
 
   createOptions = () => {
     let options = [];
-    console.log(this.props.data);
     this.props.data.map((x)=>{
       options.push({value: x.id, label: x.id})
     })
     this.setState({options: options});
   }
 
+  setIsOpenMenu = () => {
+    this.setState({isMenuOpened: !this.state.isMenuOpened});
+  }
 
   handleSubmit = (e) => {
     e.preventDefault();
+    console.log("SuccesorSent")
+    console.log(this.state.sentSuccessorId)
+    console.log("Predecessor")
+    console.log(this.state.sentPredecessorId)
     let successor = this.props.data.find(x=>x.id == this.state.sentSuccessorId)
     let predecessor = this.props.data.find(x=>x.id == this.state.sentPredecessorId)
-
+    console.log(successor);
+    console.log(predecessor);
     successor.predecessors.push(successor.id);
     predecessor.succesors.push(predecessor.id);
     this.props.onStartCreateLink(successor, 'LINK_POS_RIGHT');
@@ -108,14 +116,15 @@ export class TaskRow extends Component {
     let item = {start: {task: predecessor, position: 'LINK_POS_RIGHT'}, end: {task: successor, position: undefined}};
     this.props.onCreateLink(item);
     this.handleCloseAddDependencyModal();
-
   }
 
-  // componentDidMount = () => {
-  //   this.createOptions();
-  // }
+
+  componentDidMount = () => {
+    this.createOptions();
+  }
 
   render() {
+    console.log(this.state.options)
     return (
       <React.Fragment>        
         <Modal
@@ -133,7 +142,7 @@ export class TaskRow extends Component {
             <div>Start: {this.props.item.start.toLocaleDateString()}</div>
             <div>End: {this.props.item.end.toLocaleDateString()}</div>
             <div>Successors: {this.props.item.successors}</div>
-            <div>Predecessors: {this.props.item.end.predecessors}</div>
+            <div>Predecessors: {this.props.item.predecessors}</div>
             <hr />
             <button type="submit" className="button--common-style" onClick={this.handleCloseAddDependencyModal}>CLOSE</button>
           </div>
@@ -150,20 +159,22 @@ export class TaskRow extends Component {
           <div>Add task dependency:</div>
             <form onSubmit={this.handleSubmit}>
               <label>Predecessor task Id:</label> 
-              <input type="number" value={this.state.sentPredecessorId} onChange={this.handlePredecessorIdChange}/>
-              <br />  
-              <label>Successor task Id:</label>
-              <Select
-                // value={this.state.sentSuccessorId}
-                onChange={this.handleChange}
+                <Select
+                value={this.state.options.find(x=>x.value == this.state.sentPredecessorId)}
+                onChange={this.handlePredecessorIdChange}
                 options={this.state.options}
               />
-              {/* <input type="number" value={this.state.sentSuccessorId} onChange={this.handleSuccessorIdChange}/> */}
+              <br />  
+              <label>Successor task Id:</label>
+                <Select
+                value={this.state.options.find(x=>x.value == this.state.sentSuccessorId)}
+                onChange={this.handleSuccessorIdChange}
+                options={this.state.options}
+                />
               <hr />
-              {/* <SelectSearch options={this.props.item.successorId} value={this.state.sentSuccessorId} name="language" placeholder="Pick successor" /> */}
               <div className="multiple-buttons--wrapper">
                 <button type="submit" className="button--common-style">SAVE</button>
-                <button type="button" className="button--common-style" onClick={this.handleCloseAddDependencyModal}>CLOSE</button>
+                {/* <button type="button" className="button--common-style" onClick={this.handleCloseAddDependencyModal}>CLOSE</button> */}
               </div>
             </form>
         </div>
@@ -215,14 +226,14 @@ export class TaskRow extends Component {
             <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
               <button id="addChildButton" className="no-decoration" onClick={() => {
                 this.createOptions();
-                this.showAddDependencyModal(this.props.item.id, '')
+                this.showAddDependencyModal('', this.props.item.id)
               }}><i className="fas fa-plus color-green cursor-pointer" /></button>
               <button className="no-decoration" onClick={this.showDependenciesInfoModal}><i className="fas fa-search color-blue cursor-pointer" /></button>
             </div>
             <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
               <button className="no-decoration" onClick={() => {
                  this.createOptions();
-                 this.showAddDependencyModal('',this.props.item.id)
+                 this.showAddDependencyModal(this.props.item.id, '')
                  }}><i className="fas fa-plus color-green cursor-pointer" /></button>
               <button className="no-decoration" onClick={this.showDependenciesInfoModal}><i className="fas fa-search color-blue cursor-pointer" /></button>
             </div>
