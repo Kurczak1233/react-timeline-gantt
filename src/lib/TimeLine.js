@@ -255,6 +255,8 @@ class TimeLine extends Component {
 
   onStartCreateLink = (task, position) => {
     console.log(`Start Link ${task}`);
+    console.log(position);
+    console.log(task);
     this.setState({
       interactiveMode: true,
       taskToCreate: { task: task, position: position }
@@ -263,13 +265,13 @@ class TimeLine extends Component {
 
   onFinishCreateLink = (task, position) => {
     console.log(`End Link ${task}`);
-    console.log(this.state.taskToCreate.task.id); //1 Predecessor
-    console.log(task.id); //2 Successor
-    task.predecessors.push(this.state.taskToCreate.task.id)
-    this.state.taskToCreate.task.succesors.push(task.id)
+    console.log(position);
+    console.log(task);
     if (this.props.onCreateLink && task &&
       this.state.taskToCreate &&this.state.taskToCreate.task.id!=task.id) {
-      this.props.onCreateLink({
+        task.predecessors.push(this.state.taskToCreate.task.id)
+        this.state.taskToCreate.task.succesors.push(task.id)
+        this.props.onCreateLink({
         start: this.state.taskToCreate,
         end: { task: task, position: position }
       });
@@ -338,7 +340,8 @@ class TimeLine extends Component {
             nonEditable={this.props.nonEditableName}
             onStartCreateLink={this.onStartCreateLink}
             onFinishCreateLink={this.onFinishCreateLink}
-            onUpdateTask={this.props.onUpdateTask}
+            data={this.props.data}
+            onCreateLink={this.props.onCreateLink}
           />
           <VerticalSpliter onTaskListSizing={this.onTaskListSizing} />
         </div>

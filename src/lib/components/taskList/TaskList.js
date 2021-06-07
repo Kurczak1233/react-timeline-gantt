@@ -23,8 +23,9 @@ export class TaskRow extends Component {
       isDetailsModalOpen: false,
       isDependenciesInfoModalOpen: false,
       isAddDependencyModalOpen: false,
-      sentPredecessorId: null,
-      sentSuccessorId: null
+      sentPredecessorId: 0,
+      sentSuccessorId: 0,
+      taskToCreate: null,
     }
   }
 
@@ -66,12 +67,32 @@ export class TaskRow extends Component {
   handleCloseDependenciesInfoModal = () => {
     this.setState({isDependenciesInfoModalOpen: false})
   }
-  handleAddDependencyModal = () => {
+  handleCloseAddDependencyModal = () => {
     this.setState({isAddDependencyModalOpen: false})
   }
-  
-  handleSubmit = () => {
-    
+
+  handleSuccessorIdChange = (event) => {
+    this.setState({sentSuccessorId: event.target.value});
+  }
+   
+  handlePredecessorIdChange = (event) => {
+    this.setState({sentPredecessorId: event.target.value});
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(this.state.sentSuccessorId);
+    console.log(this.state.sentPredecessorId);
+    let successor = this.props.data.find(x=>x.id == this.state.sentSuccessorId)
+    let predecessor = this.props.data.find(x=>x.id == this.state.sentPredecessorId)
+
+    this.props.onStartCreateLink(successor, 'LINK_POS_RIGHT');
+    this.props.onFinishCreateLink(predecessor, undefined);
+    let item = {start: {task: predecessor, position: 'LINK_POS_RIGHT'}, end: {task: successor, position: undefined}};
+    console.log(this.props);
+    this.props.onCreateLink(item);
+    this.handleCloseAddDependencyModal();
+
   }
 
   render() {
@@ -99,7 +120,7 @@ export class TaskRow extends Component {
         </Modal>
         <Modal
         isOpen={this.state.isAddDependencyModalOpen}
-        onRequestClose={this.handleAddDependencyModal}
+        onRequestClose={this.handleCloseAddDependencyModal}
         className="modal-details--custom-style"
         overlayClassName="overlay"
         id="addDependencyModal"
@@ -109,10 +130,10 @@ export class TaskRow extends Component {
           <div>Add task dependency:</div>
             <form onSubmit={this.handleSubmit}>
               <label>Predecessor task Id:</label> 
-              <input type="number" value={this.state.sentPredecessorId}/>
+              <input type="number" value={this.state.sentPredecessorId} onChange={this.handlePredecessorIdChange}/>
               <br />  
               <label>Successor task Id:</label>
-              <input type="number" value={this.state.sentSuccessorId}/>
+              <input type="number" value={this.state.sentSuccessorId} onChange={this.handleSuccessorIdChange}/>
               <hr />
               {/* <SelectSearch options={this.props.item.successorId} value={this.state.sentSuccessorId} name="language" placeholder="Pick successor" /> */}
               <div className="multiple-buttons--wrapper">
@@ -167,7 +188,7 @@ export class TaskRow extends Component {
             <ContentEditable width="100%" start={this.props.item.start} value={new Date(this.props.item.start).toLocaleDateString("en-US")} index={this.props.index} onChange={this.changeStartDate} />
             <ContentEditable width="100%" end={this.props.item.end} value={new Date(this.props.item.end).toLocaleDateString("en-US")} index={this.props.index} onChange={this.changeEndDate} />
             <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
-              <button id="addChildButton" className="no-decoration" onClick={() => this.showAddDependencyModal(this.props.item.id, null)}><i className="fas fa-plus color-green cursor-pointer" /></button>
+              <button id="addChildButton" className="no-decoration" onClick={() => this.showAddDependencyModal(this.props.item, null)}><i className="fas fa-plus color-green cursor-pointer" /></button>
               <button className="no-decoration" onClick={this.showDependenciesInfoModal}><i className="fas fa-search color-blue cursor-pointer" /></button>
             </div>
             <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
@@ -212,6 +233,10 @@ export default class TaskList extends Component {
           onUpdateTask={this.props.onUpdateTask}
           onSelectItem={this.props.onSelectItem}
           nonEditable={this.props.nonEditable}
+          onStartCreateLink={this.props.onStartCreateLink}
+          onFinishCreateLink={this.props.onFinishCreateLink}
+          onCreateLink={this.props.onCreateLink}
+          data={this.props.data}
         />
       );
     }

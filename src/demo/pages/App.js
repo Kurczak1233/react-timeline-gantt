@@ -123,7 +123,7 @@ class App extends Component {
     console.log(`Select Item ${item}`);
     this.setState({ selectedItem: item });
   };
-
+  
   onUpdateTask = (item, props) => {
     item.start = props.start;
     item.end = props.end;
@@ -139,6 +139,7 @@ class App extends Component {
   };
 
   onCreateLink = (item) => {
+    console.log(item);
     let newLink = Generator.createLink(item.start, item.end);
     this.setState({ links: [...this.state.links, newLink] });
     console.log(`Update Item ${item}`);
