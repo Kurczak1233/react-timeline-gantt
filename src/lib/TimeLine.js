@@ -24,7 +24,6 @@ class TimeLine extends Component {
     this.initialise = false;
     //This variable define the number of pixels the viewport can scroll till arrive to the end of the context
     this.pxToScroll = 1900;
-
     let dayWidth = this.getDayWidth(this.props.mode);
     Config.load(this.props.config);
     //Initialising state
@@ -35,7 +34,7 @@ class TimeLine extends Component {
       nowposition: 0,
       startRow: 0, //
       endRow: 10,
-      sideStyle: { width: 400 },
+      sideStyle: { width: 350 },
       scrollLeft: 0,
       scrollTop: 0,
       numVisibleRows: 40,
@@ -318,7 +317,6 @@ class TimeLine extends Component {
   render() {
     this.checkMode();
     this.checkNeeeData();
-    console.log(this.state.data)
     return (
       <div className="timeLine">
         <div className="timeLine-side-main" style={this.state.sideStyle}>

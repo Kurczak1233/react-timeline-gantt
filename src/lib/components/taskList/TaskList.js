@@ -79,14 +79,16 @@ export class TaskRow extends Component {
               <button id="addChildButton" className="no-decoration" onClick={this.createToolTip}>
                 <i className="fas fa-plus color-green" />
               </button>
-              <div id="tooltip" hidden role="tooltip">My tooltip</div>
               <button className="no-decoration">
                 <i className="fas fa-search color-blue" />
               </button>
             </div>
             <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
-              <button className="no-decoration"><i className="fas fa-plus color-green"></i></button>
-              <button className="no-decoration"><i className="fas fa-search color-blue"></i></button>
+              <button className="no-decoration"><i className="fas fa-plus color-green" /></button>
+              <button className="no-decoration"><i className="fas fa-search color-blue" /></button>
+            </div>
+            <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
+              <button className="no-decoration"><i class="fas fa-info-circle color-blue" /></button>
             </div>
           </div>
         )}
@@ -144,10 +146,10 @@ export default class TaskList extends Component {
         <div className="timeLine-side-title" style={Config.values.taskList.title.style}>
           <div className="timeLine-side-title--custom-style">Task menu</div>
             <div className="timeLine-side--header-wrapper">
-              <div className="timeLine-side--header-wrapper--column-width-70">Id</div>
-              <div className="styleTest">Name</div>
-              <div className="styleTest">From date</div>
-              <div className="styleTest">To date</div>
+              <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Id</div>
+              <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">Name</div>
+              <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">From date</div>
+              <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">To date</div>
             </div>
         </div>
         <div ref="taskViewPort" className="timeLine-side-task-viewPort" onScroll={this.doScroll}>
@@ -159,12 +161,13 @@ export default class TaskList extends Component {
           <div className="timeLine-side-title" style={Config.values.taskList.title.style}>
             <div className="timeLine-side-title--custom-style">Task menu</div>
               <div className="timeLine-side--header-wrapper">
-                <div className="timeLine-side--header-wrapper--column-width-70">Id</div>
-                <div className="styleTest">Name</div>
-                <div className="styleTest">From date</div>
-                <div className="styleTest">To date</div>
-                <div className="timeLine-side--header-wrapper--column-width-70">Next</div>
-                <div className="timeLine-side--header-wrapper--column-width-70">Previous</div>
+                <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Id</div>
+                <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">Name</div>
+                <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">From date</div>
+                <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">To date</div>
+                <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Successors</div>
+                <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Predecessors</div>
+                <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Details</div>
               </div>
           </div>
           <div ref="taskViewPort" className="timeLine-side-task-viewPort" onScroll={this.doScroll}>
