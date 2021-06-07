@@ -3,6 +3,7 @@ import Config from 'libs/helpers/config/Config';
 import ContentEditable from 'libs/components/common/ContentEditable';
 import { createPopper } from '@popperjs/core';
 import Modal from 'react-modal';
+import SelectSearch from 'react-select-search';
 
 export class VerticalLine extends Component {
   constructor(props) {
@@ -19,7 +20,11 @@ export class TaskRow extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isModalOpen: false
+      isDetailsModalOpen: false,
+      isDependenciesInfoModalOpen: false,
+      isAddDependencyModalOpen: false,
+      sentPredecessorId: null,
+      sentSuccessorId: null
     }
   }
 
@@ -44,31 +49,98 @@ export class TaskRow extends Component {
     createPopper(button, tooltip);
   }
 
-  showModal = () => {
-    this.setState({isModalOpen: true})
+  showDetailsModal = () => {
+    this.setState({isDetailsModalOpen: true})
+  }
+  showDependenciesInfoModal = () => {
+    this.setState({isDependenciesInfoModalOpen: true})
+  }
+  showAddDependencyModal = (successorId, predecessorId) => {
+    this.setState({isAddDependencyModalOpen: true})
+    this.setState({sentPredecessorId: predecessorId, sentSuccessorId: successorId})
   }
   
-  handleCloseModal = () => {
-    this.setState({isModalOpen: false})
+  handleCloseDetailsModal = () => {
+    this.setState({isDetailsModalOpen: false})
+  }
+  handleCloseDependenciesInfoModal = () => {
+    this.setState({isDependenciesInfoModalOpen: false})
+  }
+  handleAddDependencyModal = () => {
+    this.setState({isAddDependencyModalOpen: false})
   }
   
+  handleSubmit = () => {
+    
+  }
 
   render() {
-    console.log(this.state.isModalOpen)
     return (
       <React.Fragment>        
         <Modal
-        isOpen={this.state.isModalOpen}
-        onRequestClose={this.handleCloseModal}
-        className="modal--custom-style"
+        isOpen={this.state.isDetailsModalOpen}
+        onRequestClose={this.handleCloseDetailsModal}
+        className="modal-details--custom-style"
         overlayClassName="overlay"
-        id="newTaskModal"
+        id="detailsModal"
         ariaHideApp={false}
         >
-          <div>HELLO!
-            <button onClick={this.handleCloseModal}>CLICK</button>
+          <div className="details-modal--wrapper">
+            <div>Id: {this.props.item.id}</div>
+            <div>Name: {this.props.item.name}</div>
+            <div>Duration: {this.props.item.duration}</div>
+            <div>Start: {this.props.item.start.toLocaleDateString()}</div>
+            <div>End: {this.props.item.end.toLocaleDateString()}</div>
+            <div>Successors: {this.props.item.successors}</div>
+            <div>Predecessors: {this.props.item.end.predecessors}</div>
+            <hr />
+            <button type="submit" className="button--common-style" onClick={this.handleCloseDetailsModal}>CLOSE</button>
           </div>
         </Modal>
+        <Modal
+        isOpen={this.state.isAddDependencyModalOpen}
+        onRequestClose={this.handleAddDependencyModal}
+        className="modal-details--custom-style"
+        overlayClassName="overlay"
+        id="addDependencyModal"
+        ariaHideApp={false}
+        >         
+        <div className="add-dependency-modal--wrapper">
+          <div>Add task dependency:</div>
+            <form onSubmit={this.handleSubmit}>
+              <label>Predecessor task Id:</label> 
+              <input type="number" value={this.state.sentPredecessorId}/>
+              <br />  
+              <label>Successor task Id:</label>
+              <input type="number" value={this.state.sentSuccessorId}/>
+              <hr />
+              {/* <SelectSearch options={this.props.item.successorId} value={this.state.sentSuccessorId} name="language" placeholder="Pick successor" /> */}
+              <div className="multiple-buttons--wrapper">
+                <button type="submit" className="button--common-style">SAVE</button>
+                <button type="submit" className="button--common-style" onClick={this.handleCloseDetailsModal}>CLOSE</button>
+              </div>
+            </form>
+        </div>
+      </Modal>
+        <Modal
+        isOpen={this.state.isDependenciesInfoModalOpen}
+        onRequestClose={this.handleCloseDependenciesInfoModal}
+        className="modal-details--custom-style"
+        overlayClassName="overlay"
+        id="checkDependenciesModal"
+        ariaHideApp={false}
+        >
+        {/* <div>
+            <div>Dependencies info:</div> 
+            <form>
+              <label>Predecessor task Id:</label> 
+              <input type="text" value={this.state.sentPredecessorId}/>
+              <label>Successor task Id:</label>
+              <SelectSearch options={this.props.item.successorId} value={this.state.sentSuccessorId} name="language" placeholder="Choose your language" />
+              <button type="submit" className="">SAVE</button>
+            </form>
+        </div> */}
+      </Modal>
       <div
         className="timeLine-side-task-row"
         style={{
@@ -80,44 +152,30 @@ export class TaskRow extends Component {
       >
         {this.props.nonEditable ? (
           <div className="timeLine-side--header-wrapper">
-          <div className="timeLine-side--header-wrapper--column-width-70 ">{this.props.item.id.substring(0,1)}</div>
+          <div className="timeLine-side--header-wrapper--column-width-70 ">{this.props.item.id.substring(0,5)}</div>
           <ContentEditable width="100%" value={this.props.item.name} index={this.props.index} onChange={this.onChange} />
           <ContentEditable width="100%" start={this.props.item.start} value={new Date(this.props.item.start).toLocaleDateString("en-US")} index={this.props.index} onChange={this.changeStartDate} />
           <ContentEditable width="100%" end={this.props.item.end} value={new Date(this.props.item.end).toLocaleDateString("en-US")} index={this.props.index} onChange={this.changeEndDate} />
-          {/* <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
-            <button id="addChildButton" className="no-decoration" onClick={this.createToolTip}>
-              <i className="fas fa-plus color-green" />
-            </button>
-            <div id="tooltip" hidden role="tooltip">My tooltip</div>
-            <button className="no-decoration">
-              <i className="fas fa-search color-blue" />
-            </button>
-          </div>
-          <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
-            <button className="no-decoration"><i className="fas fa-plus color-green"></i></button>
-            <button className="no-decoration"><i className="fas fa-search color-blue"></i></button>
-          </div> */}
+          <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper" onClick={this.showDetailsModal}>
+              <button className="no-decoration" ><i className="fas fa-info-circle color-blue cursor-pointer" /></button>
+            </div>
         </div>
         ) : (
           <div className="timeLine-side--header-wrapper">
-            <div className="timeLine-side--header-wrapper--column-width-70 ">{this.props.item.id.substring(0,1)}</div>
+            <div className="timeLine-side--header-wrapper--column-width-70 ">{this.props.item.id.substring(0,5)}</div>
             <ContentEditable width="100%" value={this.props.item.name} index={this.props.index} onChange={this.onChange} />
             <ContentEditable width="100%" start={this.props.item.start} value={new Date(this.props.item.start).toLocaleDateString("en-US")} index={this.props.index} onChange={this.changeStartDate} />
             <ContentEditable width="100%" end={this.props.item.end} value={new Date(this.props.item.end).toLocaleDateString("en-US")} index={this.props.index} onChange={this.changeEndDate} />
             <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
-              <button id="addChildButton" className="no-decoration" onClick={this.createToolTip}>
-                <i className="fas fa-plus color-green" />
-              </button>
-              <button className="no-decoration">
-                <i className="fas fa-search color-blue" />
-              </button>
+              <button id="addChildButton" className="no-decoration" onClick={() => this.showAddDependencyModal(this.props.item.id, null)}><i className="fas fa-plus color-green cursor-pointer" /></button>
+              <button className="no-decoration" onClick={this.showDependenciesInfoModal}><i className="fas fa-search color-blue cursor-pointer" /></button>
             </div>
             <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
-              <button className="no-decoration"><i className="fas fa-plus color-green" /></button>
-              <button className="no-decoration"><i className="fas fa-search color-blue" /></button>
+              <button className="no-decoration" onClick={() => this.showAddDependencyModal(null,this.props.item.id)}><i className="fas fa-plus color-green cursor-pointer" /></button>
+              <button className="no-decoration" onClick={this.showDependenciesInfoModal}><i className="fas fa-search color-blue cursor-pointer" /></button>
             </div>
-            <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper" onClick={this.showModal}>
-              <button className="no-decoration"><i className="fas fa-info-circle color-blue" /></button>
+            <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper" onClick={this.showDetailsModal}>
+              <button className="no-decoration" ><i className="fas fa-info-circle color-blue cursor-pointer" /></button>
             </div>
           </div>
         )}
@@ -180,6 +238,7 @@ export default class TaskList extends Component {
               <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">Name</div>
               <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">From date</div>
               <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">To date</div>
+              <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">Details</div>
             </div>
         </div>
         <div ref="taskViewPort" className="timeLine-side-task-viewPort" onScroll={this.doScroll}>

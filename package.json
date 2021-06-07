@@ -85,6 +85,7 @@
     "opencollective": "^1.0.3",
     "opencollective-postinstall": "^2.0.1",
     "react-modal": "^3.14.2",
+    "react-select-search": "^3.0.7",
     "react-sizeme": "^2.5.2"
   },
   "collective": {

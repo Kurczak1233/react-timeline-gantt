@@ -13,6 +13,7 @@ import DataController from 'libs/controller/DataController';
 import Config from 'libs/helpers/config/Config';
 import DateHelper from 'libs/helpers/DateHelper';
 import './TimeLine.css';
+import { distanceAndSkiddingToXY } from '@popperjs/core/lib/modifiers/offset';
 
 class TimeLine extends Component {
   constructor(props) {
@@ -262,6 +263,10 @@ class TimeLine extends Component {
 
   onFinishCreateLink = (task, position) => {
     console.log(`End Link ${task}`);
+    console.log(this.state.taskToCreate.task.id); //1 Predecessor
+    console.log(task.id); //2 Successor
+    task.predecessors.push(this.state.taskToCreate.task.id)
+    this.state.taskToCreate.task.succesors.push(task.id)
     if (this.props.onCreateLink && task &&
       this.state.taskToCreate &&this.state.taskToCreate.task.id!=task.id) {
       this.props.onCreateLink({
@@ -331,6 +336,9 @@ class TimeLine extends Component {
             onUpdateTask={this.props.onUpdateTask}
             onScroll={this.verticalChange}
             nonEditable={this.props.nonEditableName}
+            onStartCreateLink={this.onStartCreateLink}
+            onFinishCreateLink={this.onFinishCreateLink}
+            onUpdateTask={this.props.onUpdateTask}
           />
           <VerticalSpliter onTaskListSizing={this.onTaskListSizing} />
         </div>

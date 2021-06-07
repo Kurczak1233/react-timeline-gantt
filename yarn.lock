@@ -4349,6 +4349,11 @@ functions-have-names@^1.2.2:
   resolved "https://registry.yarnpkg.com/functions-have-names/-/functions-have-names-1.2.2.tgz#98d93991c39da9361f8e50b337c4f6e41f120e21"
   integrity sha512-bLgc3asbWdwPbx2mNk2S49kmJCuQeu0nfmaOgbs8WIyzzkw3r4htszdIi9Q9EMezDPTYuJx2wvjZ/EwgAthpnA==
 
+fuse.js@^3.4.5:
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-3.6.1.tgz#7de85fdd6e1b3377c23ce010892656385fd9b10c"
+  integrity sha512-hT9yh/tiinkmirKrlv4KWOjztdoZo1mx9Qh4KvWqC7isoXwdUY3PNWUxceF4/qO9R6riA2C29jdTOeQOIROjgw==
+
 gensync@^1.0.0-beta.2:
   version "1.0.0-beta.2"
   resolved "https://registry.yarnpkg.com/gensync/-/gensync-1.0.0-beta.2.tgz#32a6ee76c3d7f52d46b2b1ae5d93fea8580a25e0"
@@ -7724,6 +7729,13 @@ react-modal@^3.14.2:
     prop-types "^15.7.2"
     react-lifecycles-compat "^3.0.0"
     warning "^4.0.3"
+
+react-select-search@^3.0.7:
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/react-select-search/-/react-select-search-3.0.7.tgz#e3e57612657257ff8dde45354377a8be3d62c258"
+  integrity sha512-fOy5vHfeFpGHEv9n+xkvqCAIfoAon0WRaWTFujBaMS4tKwhEn7WAPoyO4DEQFTou1LOq0D5nDDOaqeMzOxpCZg==
+  optionalDependencies:
+    fuse.js "^3.4.5"
 
 react-sizeme@^2.5.2:
   version "2.6.12"
