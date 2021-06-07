@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Config from 'libs/helpers/config/Config';
 import ContentEditable from 'libs/components/common/ContentEditable';
 import { createPopper } from '@popperjs/core';
+import Modal from 'react-modal';
 
 export class VerticalLine extends Component {
   constructor(props) {
@@ -12,9 +13,14 @@ export class VerticalLine extends Component {
   }
 }
 
+Modal.setAppElement('#react-container')
+
 export class TaskRow extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      isModalOpen: false
+    }
   }
 
   onChange = (value) => {
@@ -38,8 +44,31 @@ export class TaskRow extends Component {
     createPopper(button, tooltip);
   }
 
+  showModal = () => {
+    this.setState({isModalOpen: true})
+  }
+  
+  handleCloseModal = () => {
+    this.setState({isModalOpen: false})
+  }
+  
+
   render() {
+    console.log(this.state.isModalOpen)
     return (
+      <React.Fragment>        
+        <Modal
+        isOpen={this.state.isModalOpen}
+        onRequestClose={this.handleCloseModal}
+        className="modal--custom-style"
+        overlayClassName="overlay"
+        id="newTaskModal"
+        ariaHideApp={false}
+        >
+          <div>HELLO!
+            <button onClick={this.handleCloseModal}>CLICK</button>
+          </div>
+        </Modal>
       <div
         className="timeLine-side-task-row"
         style={{
@@ -87,12 +116,13 @@ export class TaskRow extends Component {
               <button className="no-decoration"><i className="fas fa-plus color-green" /></button>
               <button className="no-decoration"><i className="fas fa-search color-blue" /></button>
             </div>
-            <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
-              <button className="no-decoration"><i class="fas fa-info-circle color-blue" /></button>
+            <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper" onClick={this.showModal}>
+              <button className="no-decoration"><i className="fas fa-info-circle color-blue" /></button>
             </div>
           </div>
         )}
       </div>
+      </React.Fragment>
     );
   }
 }
