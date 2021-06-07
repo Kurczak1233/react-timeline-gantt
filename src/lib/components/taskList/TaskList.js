@@ -3,7 +3,7 @@ import Config from 'libs/helpers/config/Config';
 import ContentEditable from 'libs/components/common/ContentEditable';
 import { createPopper } from '@popperjs/core';
 import Modal from 'react-modal';
-import SelectSearch from 'react-select-search';
+import Select from 'react-select';
 
 export class VerticalLine extends Component {
   constructor(props) {
@@ -23,11 +23,18 @@ export class TaskRow extends Component {
       isDetailsModalOpen: false,
       isDependenciesInfoModalOpen: false,
       isAddDependencyModalOpen: false,
-      sentPredecessorId: 0,
-      sentSuccessorId: 0,
+      sentPredecessorId: null,
+      sentSuccessorId: null,
       taskToCreate: null,
+      options: [],
+      selectedOption: null,
     }
   }
+
+  handleChange = selectedOption => {
+    this.setState({ selectedOption });
+    console.log(`Option selected:`, selectedOption);
+  };
 
   onChange = (value) => {
     if (this.props.onUpdateTask) {
@@ -79,21 +86,34 @@ export class TaskRow extends Component {
     this.setState({sentPredecessorId: event.target.value});
   }
 
+  createOptions = () => {
+    let options = [];
+    console.log(this.props.data);
+    this.props.data.map((x)=>{
+      options.push({value: x.id, label: x.id})
+    })
+    this.setState({options: options});
+  }
+
+
   handleSubmit = (e) => {
     e.preventDefault();
-    console.log(this.state.sentSuccessorId);
-    console.log(this.state.sentPredecessorId);
     let successor = this.props.data.find(x=>x.id == this.state.sentSuccessorId)
     let predecessor = this.props.data.find(x=>x.id == this.state.sentPredecessorId)
 
+    successor.predecessors.push(successor.id);
+    predecessor.succesors.push(predecessor.id);
     this.props.onStartCreateLink(successor, 'LINK_POS_RIGHT');
     this.props.onFinishCreateLink(predecessor, undefined);
     let item = {start: {task: predecessor, position: 'LINK_POS_RIGHT'}, end: {task: successor, position: undefined}};
-    console.log(this.props);
     this.props.onCreateLink(item);
     this.handleCloseAddDependencyModal();
 
   }
+
+  // componentDidMount = () => {
+  //   this.createOptions();
+  // }
 
   render() {
     return (
@@ -115,7 +135,7 @@ export class TaskRow extends Component {
             <div>Successors: {this.props.item.successors}</div>
             <div>Predecessors: {this.props.item.end.predecessors}</div>
             <hr />
-            <button type="submit" className="button--common-style" onClick={this.handleCloseDetailsModal}>CLOSE</button>
+            <button type="submit" className="button--common-style" onClick={this.handleCloseAddDependencyModal}>CLOSE</button>
           </div>
         </Modal>
         <Modal
@@ -133,12 +153,17 @@ export class TaskRow extends Component {
               <input type="number" value={this.state.sentPredecessorId} onChange={this.handlePredecessorIdChange}/>
               <br />  
               <label>Successor task Id:</label>
-              <input type="number" value={this.state.sentSuccessorId} onChange={this.handleSuccessorIdChange}/>
+              <Select
+                // value={this.state.sentSuccessorId}
+                onChange={this.handleChange}
+                options={this.state.options}
+              />
+              {/* <input type="number" value={this.state.sentSuccessorId} onChange={this.handleSuccessorIdChange}/> */}
               <hr />
               {/* <SelectSearch options={this.props.item.successorId} value={this.state.sentSuccessorId} name="language" placeholder="Pick successor" /> */}
               <div className="multiple-buttons--wrapper">
                 <button type="submit" className="button--common-style">SAVE</button>
-                <button type="submit" className="button--common-style" onClick={this.handleCloseDetailsModal}>CLOSE</button>
+                <button type="button" className="button--common-style" onClick={this.handleCloseAddDependencyModal}>CLOSE</button>
               </div>
             </form>
         </div>
@@ -188,11 +213,17 @@ export class TaskRow extends Component {
             <ContentEditable width="100%" start={this.props.item.start} value={new Date(this.props.item.start).toLocaleDateString("en-US")} index={this.props.index} onChange={this.changeStartDate} />
             <ContentEditable width="100%" end={this.props.item.end} value={new Date(this.props.item.end).toLocaleDateString("en-US")} index={this.props.index} onChange={this.changeEndDate} />
             <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
-              <button id="addChildButton" className="no-decoration" onClick={() => this.showAddDependencyModal(this.props.item, null)}><i className="fas fa-plus color-green cursor-pointer" /></button>
+              <button id="addChildButton" className="no-decoration" onClick={() => {
+                this.createOptions();
+                this.showAddDependencyModal(this.props.item.id, '')
+              }}><i className="fas fa-plus color-green cursor-pointer" /></button>
               <button className="no-decoration" onClick={this.showDependenciesInfoModal}><i className="fas fa-search color-blue cursor-pointer" /></button>
             </div>
             <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
-              <button className="no-decoration" onClick={() => this.showAddDependencyModal(null,this.props.item.id)}><i className="fas fa-plus color-green cursor-pointer" /></button>
+              <button className="no-decoration" onClick={() => {
+                 this.createOptions();
+                 this.showAddDependencyModal('',this.props.item.id)
+                 }}><i className="fas fa-plus color-green cursor-pointer" /></button>
               <button className="no-decoration" onClick={this.showDependenciesInfoModal}><i className="fas fa-search color-blue cursor-pointer" /></button>
             </div>
             <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper" onClick={this.showDetailsModal}>
