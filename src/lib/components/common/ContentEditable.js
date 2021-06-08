@@ -59,6 +59,7 @@ export default class ContentEditable extends Component {
   }
 
   renderEditor = () => {
+    console.log(this.state.value)
     return (
       <input
         ref="textInput"

@@ -12,6 +12,7 @@ type TimeLineProps = {
     onCreateLink?: (link: Link) => void;
     onSelectItem?: (item: object) => void;
     onHorizonChange?: (start: Date, end: Date) => void;
+    submitCallback?: () => void;
 };
 
 type Task = {

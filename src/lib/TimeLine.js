@@ -46,7 +46,8 @@ class TimeLine extends Component {
       links: [],
       mode: this.props.mode ? this.props.mode : VIEW_MODE_MONTH,
       size: { width: 1, height: 1 },
-      changingTask: null
+      changingTask: null,
+      submitCallback: null,
     };
   }
 
@@ -341,6 +342,7 @@ class TimeLine extends Component {
             data={this.props.data}
             onCreateLink={this.props.onCreateLink}
             links={this.props.links}
+            submitCallback={this.props.submitCallback}
           />
           <VerticalSpliter onTaskListSizing={this.onTaskListSizing} />
         </div>

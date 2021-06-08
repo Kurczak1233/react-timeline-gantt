@@ -79,6 +79,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@popperjs/core": "^2.9.2",
+    "date-fns": "^2.22.1",
     "i": "^0.3.6",
     "jest-config": "^25.1.0",
     "moment": "^2.24.0",

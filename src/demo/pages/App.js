@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import TimeLine from 'libs/TimeLine';
 import Generator from './Generator';
 import './App.css';
+import { differenceInCalendarDays } from "date-fns";
 
 const config = {
   header: {
@@ -99,7 +100,7 @@ class App extends Component {
       selectedItem: null,
       timelineMode: 'month',
       links: result.links,
-      nonEditableName: false
+      nonEditableName: false,
     };
   }
 
@@ -128,6 +129,9 @@ class App extends Component {
   onUpdateTask = (item, props) => {
     item.start = props.start;
     item.end = props.end;
+    console.log(props.end);
+    console.log(props);
+    console.log(props.start);
         const startingDate = new Date(item.start);
         let dayCount = 0;
         while (item.end > startingDate) {
@@ -176,15 +180,17 @@ class App extends Component {
   }
 
   addTask = () => {
+    let today = new Date();
+    let randomDate = this.getRandomDate();
     let newTask = {
       id: `${this.state.data.length}`,
-      start: new Date(),
-      end: this.getRandomDate(),
+      start: today,
+      end: randomDate,
       name: 'New Task',
       color: this.getRandomColor(),
       predecessors: [],
       succesors: [],
-      duration: null,
+      duration: differenceInCalendarDays(randomDate, today)
     };
     console.log(newTask);
     this.setState({ data: [newTask, ...this.state.data] });
@@ -276,6 +282,7 @@ class App extends Component {
             selectedItem={this.state.selectedItem}
             nonEditableName={this.state.nonEditableName}
             links={this.state.links}
+            submitCallback={this.props.submitCallback}
           />
         </div>
       </div>

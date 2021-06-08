@@ -4,6 +4,7 @@ import ContentEditable from 'libs/components/common/ContentEditable';
 import { createPopper } from '@popperjs/core';
 import Modal from 'react-modal';
 import Select from 'react-select';
+import { addDays , toDate} from "date-fns";
 
 export class VerticalLine extends Component {
   constructor(props) {
@@ -29,7 +30,10 @@ export class TaskRow extends Component {
       options: [],
       selectedOption: null,
       isMenuOpened: false,
+      submitCallback: null,
+      duration: this.props.item.duration
     }
+    console.log(props)
   }
 
   handleChange = selectedOption => {
@@ -44,11 +48,17 @@ export class TaskRow extends Component {
   };
 
   changeStartDate = (value) => {
-      this.props.onUpdateTask(this.props.item, { start: new Date(value), end: this.props.item.end})
+    var splitDate = value.split('/');
+    var month = splitDate[1] - 1;s
+    var date = new Date(splitDate[2], month, splitDate[0]);
+    this.props.onUpdateTask(this.props.item, { start: date, end: this.props.item.end})
   };
 
   changeEndDate = (value) => {
-    this.props.onUpdateTask(this.props.item, { start: this.props.item.start, end: new Date(value)})
+    var splitDate = value.split('/');
+    var month = splitDate[1] - 1;
+    var date = new Date(splitDate[2], month, splitDate[0]);
+    this.props.onUpdateTask(this.props.item, { start: this.props.item.start, end: date})
   };
 //this.props.onFinishCreateLink(this.props.item, position); onClick ta funkcja?
 
@@ -115,35 +125,41 @@ export class TaskRow extends Component {
       predecessor.succesors.push(successor.id);
     }
 
+    if(!predecessor.id === successor.id)
+    {
+      predecessor.succesors.push(successor.id);
+    }
+    if(!predecessor.id===successor.id)
+    {
+      succesors.predecessor.push(successor.id);
+    }
+
     this.props.onStartCreateLink(successor, 'LINK_POS_RIGHT');
     this.props.onFinishCreateLink(predecessor, undefined);
 
     let item = {start: {task: predecessor, position: 'LINK_POS_RIGHT'}, end: {task: successor, position: undefined}};
     this.props.onCreateLink(item);
+    // if(submitCallback){
+    //   callback();
+    // }
     this.handleCloseAddDependencyModal();
   }
 
+  changeDuration = (days) => {
+    let daysDifference = days - this.props.item.duration;
+    this.props.onUpdateTask(this.props.item, { start: this.props.item.start, end: addDays(new Date(this.props.item.end), daysDifference), duration: days})
+  }
 
   componentDidMount = () => { 
     this.createOptions();
   }
 
-  updateOptions = (option) => {
-    console.log(option);
-    //this.setState({options: options});
-  }
 
-  // customStyles = {
-  //   menu: (provided, state) => ({
-  //     ...provided,
-  //     height: '150px'
-  //   })
-  // }
-
+  
   render() {
     return (
       <React.Fragment>        
-        <Modal
+        {/* <Modal
         isOpen={this.state.isDetailsModalOpen}
         onRequestClose={this.handleCloseDetailsModal}
         className="modal-details--custom-style"
@@ -162,7 +178,7 @@ export class TaskRow extends Component {
             <hr />
             <button type="submit" className="button--common-style" onClick={this.handleCloseDetailsModal}>CLOSE</button>
           </div>
-        </Modal>
+        </Modal> */}
         <Modal
         isOpen={this.state.isAddDependencyModalOpen}
         onRequestClose={this.handleCloseAddDependencyModal}
@@ -175,7 +191,7 @@ export class TaskRow extends Component {
           <div>Add task dependency:</div>
           <br />
             <form onSubmit={this.handleSubmit}>
-              <label>Predecessor task Id:</label> 
+                <label>Predecessor task Id:</label> 
                   <Select
                   styles={this.customStyles}
                   value={this.state.options.find(x=>x.value == this.state.sentPredecessorId)}
@@ -198,24 +214,7 @@ export class TaskRow extends Component {
               </div>
             </form>
         </div>
-      </Modal>
-        <Modal
-        isOpen={this.state.isDependenciesInfoModalOpen}
-        onRequestClose={this.handleCloseDependenciesInfoModal}
-        className="modal-details--custom-style"
-        overlayClassName="overlay"
-        id="checkDependenciesModal"
-        ariaHideApp={false}
-        >
-        <div>
-            <div>Dependencies info:</div> 
-            <form>
-              {/* dodać zmienną jak jest to odpowiedni przedział */}
-              <label>Predecessor task Id:</label> 
-              <label>Successor task Id:</label>
-            </form>
-        </div>
-      </Modal>
+      </Modal>     
       <div
         className="timeLine-side-task-row"
         style={{
@@ -231,33 +230,27 @@ export class TaskRow extends Component {
           <ContentEditable width="100%" value={this.props.item.name} index={this.props.index} onChange={this.onChange} />
           <ContentEditable width="100%" start={this.props.item.start} value={new Date(this.props.item.start).toLocaleDateString("en-US")} index={this.props.index} onChange={this.changeStartDate} />
           <ContentEditable width="100%" end={this.props.item.end} value={new Date(this.props.item.end).toLocaleDateString("en-US")} index={this.props.index} onChange={this.changeEndDate} />
-          <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper" onClick={this.showDetailsModal}>
-              <button className="no-decoration" ><i className="fas fa-info-circle color-blue cursor-pointer" /></button>
-            </div>
+          <ContentEditable width="70%" value={this.props.item.duration} index={this.props.index} onChange={this.changeDuration} />
         </div>
         ) : (
           <div className="timeLine-side--header-wrapper">
             <div className="timeLine-side--header-wrapper--column-width-70 ">{this.props.item.id.substring(0,5)}</div>
             <ContentEditable width="100%" value={this.props.item.name} index={this.props.index} onChange={this.onChange} />
-            <ContentEditable width="100%" start={this.props.item.start} value={new Date(this.props.item.start).toLocaleDateString("en-US")} index={this.props.index} onChange={this.changeStartDate} />
-            <ContentEditable width="100%" end={this.props.item.end} value={new Date(this.props.item.end).toLocaleDateString("en-US")} index={this.props.index} onChange={this.changeEndDate} />
+            <ContentEditable width="100%" start={this.props.item.start} value={new Date(this.props.item.start).toLocaleDateString('en-GB')} index={this.props.index} onChange={this.changeStartDate} />
+            <ContentEditable width="100%" end={this.props.item.end} value={new Date(this.props.item.end).toLocaleDateString('en-GB')} index={this.props.index} onChange={this.changeEndDate} />
             <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
               <button id="addChildButton" className="no-decoration" onClick={() => {
                 this.createOptions(this.props.item.id);
                 this.showAddDependencyModal(this.props.item.id, '')
               }}><i className="fas fa-plus color-green cursor-pointer" /></button>
-              <button className="no-decoration" onClick={this.showDependenciesInfoModal}><i className="fas fa-search color-blue cursor-pointer" /></button>
             </div>
             <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
               <button className="no-decoration" onClick={() => {
                  this.createOptions(this.props.item.id);
                  this.showAddDependencyModal('', this.props.item.id)
                  }}><i className="fas fa-plus color-green cursor-pointer" /></button>
-              <button className="no-decoration" onClick={this.showDependenciesInfoModal}><i className="fas fa-search color-blue cursor-pointer" /></button>
             </div>
-            <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper" onClick={this.showDetailsModal}>
-              <button className="no-decoration" ><i className="fas fa-info-circle color-blue cursor-pointer" /></button>
-            </div>
+            <ContentEditable width="70%" value={this.props.item.duration} index={this.props.index} onChange={this.changeDuration} />
           </div>
         )}
       </div>
@@ -322,9 +315,9 @@ export default class TaskList extends Component {
             <div className="timeLine-side--header-wrapper">
               <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Id</div>
               <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">Name</div>
-              <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">From date</div>
-              <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">To date</div>
-              <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">Details</div>
+              <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">From</div>
+              <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">To</div>
+              <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Duration</div>
             </div>
         </div>
         <div ref="taskViewPort" className="timeLine-side-task-viewPort" onScroll={this.doScroll}>
@@ -338,11 +331,11 @@ export default class TaskList extends Component {
               <div className="timeLine-side--header-wrapper">
                 <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Id</div>
                 <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">Name</div>
-                <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">From date</div>
-                <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">To date</div>
+                <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">From</div>
+                <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">To</div>
                 <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Predecessors</div>
                 <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Successors</div>
-                <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Details</div>
+                <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Duration</div>
               </div>
           </div>
           <div ref="taskViewPort" className="timeLine-side-task-viewPort" onScroll={this.doScroll}>
