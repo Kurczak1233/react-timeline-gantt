@@ -90,7 +90,7 @@ export class TaskRow extends Component {
   createOptions = () => {
     let options = [];
     this.props.data.map((x)=>{
-      options.push({value: x.id, label: x.id})
+        options.push({value: x.id, label: x.id}) 
     })
     this.setState({options: options});
   }
@@ -105,10 +105,16 @@ export class TaskRow extends Component {
     let predecessor = this.props.data.find(x=>x.id == this.state.sentSuccessorId)
     let successor = this.props.data.find(x=>x.id == this.state.sentPredecessorId)
     
-    successor.predecessors.push(predecessor.id);
-    predecessor.succesors.push(successor.id);
-    console.log(successor);
-    console.log(predecessor);
+    //Anti repeat validation
+    if(!successor.predecessors.find(x=>x == predecessor.id))
+    {
+      successor.predecessors.push(predecessor.id);
+    }
+    if(!predecessor.succesors.find(x=>x == successor.id))
+    {
+      predecessor.succesors.push(successor.id);
+    }
+
     this.props.onStartCreateLink(successor, 'LINK_POS_RIGHT');
     this.props.onFinishCreateLink(predecessor, undefined);
 
@@ -122,9 +128,19 @@ export class TaskRow extends Component {
     this.createOptions();
   }
 
+  updateOptions = (option) => {
+    console.log(option);
+    //this.setState({options: options});
+  }
+
+  // customStyles = {
+  //   menu: (provided, state) => ({
+  //     ...provided,
+  //     height: '150px'
+  //   })
+  // }
+
   render() {
-    console.log(this.props.item.succesors);
-    console.log(this.props.item.predecessors);
     return (
       <React.Fragment>        
         <Modal
@@ -141,8 +157,8 @@ export class TaskRow extends Component {
             <div>Duration: {this.props.item.duration}</div>
             <div>Start: {this.props.item.start.toLocaleDateString()}</div>
             <div>End: {this.props.item.end.toLocaleDateString()}</div>
-            <div>Successors: {this.props.item.succesors}</div>
-            <div>Predecessors: {this.props.item.predecessors}</div>
+            <div>Successors: {this.props.item.succesors.map(x=> <span> {x} </span>)}</div>
+            <div>Predecessors: {this.props.item.predecessors.map(x=> <span> {x} </span>)}</div>
             <hr />
             <button type="submit" className="button--common-style" onClick={this.handleCloseDetailsModal}>CLOSE</button>
           </div>
@@ -150,27 +166,32 @@ export class TaskRow extends Component {
         <Modal
         isOpen={this.state.isAddDependencyModalOpen}
         onRequestClose={this.handleCloseAddDependencyModal}
-        className="modal-details--custom-style custom-modal-height"
+        className="modal-details--custom-style"
         overlayClassName="overlay"
         id="addDependencyModal"
         ariaHideApp={false}
         >         
         <div className="add-dependency-modal--wrapper">
           <div>Add task dependency:</div>
+          <br />
             <form onSubmit={this.handleSubmit}>
               <label>Predecessor task Id:</label> 
-                <Select
-                value={this.state.options.find(x=>x.value == this.state.sentPredecessorId)}
-                onChange={this.handlePredecessorIdChange}
-                options={this.state.options}
-              />
+                  <Select
+                  styles={this.customStyles}
+                  value={this.state.options.find(x=>x.value == this.state.sentPredecessorId)}
+                  onChange={this.handlePredecessorIdChange}
+                  options={this.state.options}
+                  maxMenuHeight={85}
+                />
               <br />  
               <label>Successor task Id:</label>
                 <Select
                 value={this.state.options.find(x=>x.value == this.state.sentSuccessorId)}
                 onChange={this.handleSuccessorIdChange}
                 options={this.state.options}
+                maxMenuHeight={85}
                 />
+              <br />
               <hr />
               <div className="multiple-buttons--wrapper">
                 <button type="submit" className="button--common-style">SAVE</button>
@@ -186,16 +207,14 @@ export class TaskRow extends Component {
         id="checkDependenciesModal"
         ariaHideApp={false}
         >
-        {/*<div>
+        <div>
             <div>Dependencies info:</div> 
             <form>
+              {/* dodać zmienną jak jest to odpowiedni przedział */}
               <label>Predecessor task Id:</label> 
-              <input type="text" value={this.state.sentPredecessorId}/>
               <label>Successor task Id:</label>
-              <SelectSearch options={this.props.item.successorId} value={this.state.sentSuccessorId} name="language" placeholder="Choose your language" />
-              <button type="submit" className="">SAVE</button>
             </form>
-        </div> */}
+        </div>
       </Modal>
       <div
         className="timeLine-side-task-row"
@@ -224,15 +243,15 @@ export class TaskRow extends Component {
             <ContentEditable width="100%" end={this.props.item.end} value={new Date(this.props.item.end).toLocaleDateString("en-US")} index={this.props.index} onChange={this.changeEndDate} />
             <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
               <button id="addChildButton" className="no-decoration" onClick={() => {
-                this.createOptions();
-                this.showAddDependencyModal('', this.props.item.id)
+                this.createOptions(this.props.item.id);
+                this.showAddDependencyModal(this.props.item.id, '')
               }}><i className="fas fa-plus color-green cursor-pointer" /></button>
               <button className="no-decoration" onClick={this.showDependenciesInfoModal}><i className="fas fa-search color-blue cursor-pointer" /></button>
             </div>
             <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
               <button className="no-decoration" onClick={() => {
-                 this.createOptions();
-                 this.showAddDependencyModal(this.props.item.id, '')
+                 this.createOptions(this.props.item.id);
+                 this.showAddDependencyModal('', this.props.item.id)
                  }}><i className="fas fa-plus color-green cursor-pointer" /></button>
               <button className="no-decoration" onClick={this.showDependenciesInfoModal}><i className="fas fa-search color-blue cursor-pointer" /></button>
             </div>
@@ -321,8 +340,8 @@ export default class TaskList extends Component {
                 <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">Name</div>
                 <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">From date</div>
                 <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">To date</div>
-                <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Successors</div>
                 <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Predecessors</div>
+                <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Successors</div>
                 <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Details</div>
               </div>
           </div>

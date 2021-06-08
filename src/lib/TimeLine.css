@@ -336,9 +336,6 @@
   height: auto;
   min-width: 300px
 }
-.custom-modal-height {
-  height: 68%
-}
 .overlay {
   position: fixed;
   inset: 0px;
