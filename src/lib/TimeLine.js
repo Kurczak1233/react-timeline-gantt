@@ -265,8 +265,6 @@ class TimeLine extends Component {
 
   onFinishCreateLink = (task, position) => {
     console.log(`End Link ${task}`);
-    console.log(position);
-    console.log(task);
     if (this.props.onCreateLink && task &&
       this.state.taskToCreate &&this.state.taskToCreate.task.id!=task.id) {
         task.predecessors.push(this.state.taskToCreate.task.id)
@@ -342,6 +340,7 @@ class TimeLine extends Component {
             onFinishCreateLink={this.onFinishCreateLink}
             data={this.props.data}
             onCreateLink={this.props.onCreateLink}
+            links={this.props.links}
           />
           <VerticalSpliter onTaskListSizing={this.onTaskListSizing} />
         </div>

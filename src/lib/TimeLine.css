@@ -333,10 +333,12 @@
   padding: 0px;
   font-size: 20px;
   width: 30%;
-  height:auto;
+  height: auto;
   min-width: 300px
 }
-
+.custom-modal-height {
+  height: 68%
+}
 .overlay {
   position: fixed;
   inset: 0px;

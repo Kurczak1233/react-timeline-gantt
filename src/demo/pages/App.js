@@ -121,6 +121,7 @@ class App extends Component {
 
   onSelectItem = (item) => {
     console.log(`Select Item ${item}`);
+    console.log(item);
     this.setState({ selectedItem: item });
   };
   
@@ -139,7 +140,6 @@ class App extends Component {
   };
 
   onCreateLink = (item) => {
-    console.log(item);
     let newLink = Generator.createLink(item.start, item.end);
     this.setState({ links: [...this.state.links, newLink] });
     console.log(`Update Item ${item}`);
@@ -275,6 +275,7 @@ class App extends Component {
             itemheight={this.state.itemheight}
             selectedItem={this.state.selectedItem}
             nonEditableName={this.state.nonEditableName}
+            links={this.state.links}
           />
         </div>
       </div>

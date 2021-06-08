@@ -101,30 +101,30 @@ export class TaskRow extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    console.log("SuccesorSent")
-    console.log(this.state.sentSuccessorId)
-    console.log("Predecessor")
-    console.log(this.state.sentPredecessorId)
-    let successor = this.props.data.find(x=>x.id == this.state.sentSuccessorId)
-    let predecessor = this.props.data.find(x=>x.id == this.state.sentPredecessorId)
+
+    let predecessor = this.props.data.find(x=>x.id == this.state.sentSuccessorId)
+    let successor = this.props.data.find(x=>x.id == this.state.sentPredecessorId)
+    
+    successor.predecessors.push(predecessor.id);
+    predecessor.succesors.push(successor.id);
     console.log(successor);
     console.log(predecessor);
-    successor.predecessors.push(successor.id);
-    predecessor.succesors.push(predecessor.id);
     this.props.onStartCreateLink(successor, 'LINK_POS_RIGHT');
     this.props.onFinishCreateLink(predecessor, undefined);
+
     let item = {start: {task: predecessor, position: 'LINK_POS_RIGHT'}, end: {task: successor, position: undefined}};
     this.props.onCreateLink(item);
     this.handleCloseAddDependencyModal();
   }
 
 
-  componentDidMount = () => {
+  componentDidMount = () => { 
     this.createOptions();
   }
 
   render() {
-    console.log(this.state.options)
+    console.log(this.props.item.succesors);
+    console.log(this.props.item.predecessors);
     return (
       <React.Fragment>        
         <Modal
@@ -141,16 +141,16 @@ export class TaskRow extends Component {
             <div>Duration: {this.props.item.duration}</div>
             <div>Start: {this.props.item.start.toLocaleDateString()}</div>
             <div>End: {this.props.item.end.toLocaleDateString()}</div>
-            <div>Successors: {this.props.item.successors}</div>
+            <div>Successors: {this.props.item.succesors}</div>
             <div>Predecessors: {this.props.item.predecessors}</div>
             <hr />
-            <button type="submit" className="button--common-style" onClick={this.handleCloseAddDependencyModal}>CLOSE</button>
+            <button type="submit" className="button--common-style" onClick={this.handleCloseDetailsModal}>CLOSE</button>
           </div>
         </Modal>
         <Modal
         isOpen={this.state.isAddDependencyModalOpen}
         onRequestClose={this.handleCloseAddDependencyModal}
-        className="modal-details--custom-style"
+        className="modal-details--custom-style custom-modal-height"
         overlayClassName="overlay"
         id="addDependencyModal"
         ariaHideApp={false}
@@ -174,7 +174,6 @@ export class TaskRow extends Component {
               <hr />
               <div className="multiple-buttons--wrapper">
                 <button type="submit" className="button--common-style">SAVE</button>
-                {/* <button type="button" className="button--common-style" onClick={this.handleCloseAddDependencyModal}>CLOSE</button> */}
               </div>
             </form>
         </div>
@@ -187,7 +186,7 @@ export class TaskRow extends Component {
         id="checkDependenciesModal"
         ariaHideApp={false}
         >
-        {/* <div>
+        {/*<div>
             <div>Dependencies info:</div> 
             <form>
               <label>Predecessor task Id:</label> 
@@ -279,6 +278,7 @@ export default class TaskList extends Component {
           onFinishCreateLink={this.props.onFinishCreateLink}
           onCreateLink={this.props.onCreateLink}
           data={this.props.data}
+          links={this.props.links}
         />
       );
     }
