@@ -5,7 +5,7 @@ export default class ContentEditable extends Component {
     this.isFocus = false;
     this.state = {
       editing: false,
-      value: this.props.value
+      value: this.props.value,
     };
     this.width = this.props.width
   }
@@ -35,11 +35,15 @@ export default class ContentEditable extends Component {
   finishEditing = () => {
     this.isFocus = false;
     this.setState({ editing: false });
-    if (this.props.onChange) this.props.onChange(this.state.value);
+    if (this.props.onChange) {
+      this.props.onChange(this.state.value)
+      this.setState({value: ""})
+    };
   };
 
   handleChange = (e) => {
     this.setState({ value: e.target.value });
+    // this.props.handleInputChange();
   };
 
   renderDiv = () => {
@@ -59,7 +63,6 @@ export default class ContentEditable extends Component {
   }
 
   renderEditor = () => {
-    console.log(this.state.value)
     return (
       <input
         ref="textInput"

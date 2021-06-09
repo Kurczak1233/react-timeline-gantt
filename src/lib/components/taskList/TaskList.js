@@ -31,7 +31,9 @@ export class TaskRow extends Component {
       selectedOption: null,
       isMenuOpened: false,
       submitCallback: null,
-      duration: this.props.item.duration
+      duration: this.props.item.duration,
+      inputHasChanged: false,
+      setInputValue: '',
     }
     console.log(props)
   }
@@ -143,9 +145,6 @@ export class TaskRow extends Component {
 
     let item = {start: {task: predecessor, position: 'LINK_POS_RIGHT'}, end: {task: successor, position: undefined}};
     this.props.onCreateLink(item);
-    // if(submitCallback){
-    //   callback();
-    // }
   }
 
   changeDuration = (days) => {
@@ -156,10 +155,14 @@ export class TaskRow extends Component {
   componentDidMount = () => { 
     this.createOptions();
   }
-
-
+  
+  handleInputChange = () => {
+    this.setState({ inputHasChanged: true });
+    this.setState({ setInputValue: '' });
+  }
   
   render() {
+    console.log(this.state.inputHasChanged)
     return (
       <React.Fragment>        
         <Modal
@@ -213,8 +216,8 @@ export class TaskRow extends Component {
            {this.props.showFromColumn ? ( <ContentEditable width="100%" start={this.props.item.start} value={new Date(this.props.item.start).toLocaleDateString('en-GB')} index={this.props.index} onChange={this.changeStartDate} />) : ''}
            {this.props.showToColumn ? ( <ContentEditable width="100%" end={this.props.item.end} value={new Date(this.props.item.end).toLocaleDateString('en-GB')} index={this.props.index} onChange={this.changeEndDate} />) : ''}
            {this.props.showDurationColumn ? ( <ContentEditable width="70%" value={this.props.item.duration} index={this.props.index} onChange={this.changeDuration} />) : ''}
-           {this.props.showPredecessorsColumn ? ( <ContentEditable width="70%" value='' onChange={(value) => this.handleSubmit(this.props.item.id, value)} />) : ''}
-           {this.props.showSuccessorsColumn ? ( <ContentEditable width="70%" value='' onChange={(value) => this.handleSubmit(value, this.props.item.id)}/>) : ''}
+           {this.props.showPredecessorsColumn ? ( <ContentEditable handleInputChange={this.handleInputChange} width="70%" value={this.state.setInputValue} onChange={(value) => this.handleSubmit(this.props.item.id, value)}/>) : ''}
+           {this.props.showSuccessorsColumn ? ( <ContentEditable handleInputChange={this.handleInputChange} width="70%" value={this.state.setInputValue} onChange={(value) => this.handleSubmit(value, this.props.item.id)}/>) : ''}
 
            {/* {this.props.showPredecessorsColumn ? ( <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
               <button id="addChildButton" className="no-decoration" onClick={() => {
