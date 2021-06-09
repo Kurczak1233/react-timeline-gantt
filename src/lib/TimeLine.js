@@ -343,6 +343,16 @@ class TimeLine extends Component {
             onCreateLink={this.props.onCreateLink}
             links={this.props.links}
             submitCallback={this.props.submitCallback}
+            addTask={this.props.addTask}
+            delete={this.props.delete}
+            showIdColumn={this.props.showIdColumn}
+            showNameColumn={this.props.showNameColumn}
+            showFromColumn={this.props.showFromColumn}
+            showToColumn={this.props.showToColumn}
+            showDurationColumn={this.props.showDurationColumn}
+            showPredecessorsColumn={this.props.showPredecessorsColumn}
+            showSuccessorsColumn={this.props.showSuccessorsColumn}
+            
           />
           <VerticalSpliter onTaskListSizing={this.onTaskListSizing} />
         </div>

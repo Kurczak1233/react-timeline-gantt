@@ -44,8 +44,8 @@ export default class ContentEditable extends Component {
 
   renderDiv = () => {
     return (
-      <div tabIndex={this.props.index} className="timeLine-side--text-no-wrap" onClick={this.onFocus} onFocus={this.onFocus} style={{ width: this.width }}>
-        {' '}
+      <div tabIndex={this.props.index} className="timeLine-side--text-no-wrap " onClick={this.onFocus} onFocus={this.onFocus} style={{ width: this.width }}>
+        {(this.state.value === '' ? <span>Add...</span> : '')}
         {this.state.value}
       </div>
     );
@@ -64,10 +64,11 @@ export default class ContentEditable extends Component {
       <input
         ref="textInput"
         onBlur={this.onBlur}
-        className="timeLine-side--text-no-wrap"
+        className="timeLine-side--text-no-wrap time-line--input"
         style={{ outlineColor: 'black', outlineStyle: 'oinset' }}
         type="text"
         name="name"
+        autoComplete="off"
         value={this.state.value}
         onKeyUp={this.handleKey}
         onChange={this.handleChange}

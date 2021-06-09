@@ -30,7 +30,8 @@ html {
   justify-content: flex-start;
   align-items: center;
   width: 100%;
-  height: 100%;
+  height: 88%;
+  margin-bottom: 5.5%;
 }
 
 .list {
@@ -157,4 +158,35 @@ html {
 .mode-container-item-editable-toggle {
   margin-left: 20px;
   width: 175px;
+}
+.footer-buttons--wrapper {
+  margin-left: 15px;
+  display: flex;
+}
+.footer--customizable-menu {
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+  margin-left: 50px;
+
+}
+.customization-button {
+    height: 25px;
+    width: 120px;
+    font-weight: bold;
+    color: rgb(252, 252, 252);
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border: 2px solid beige;
+    justify-content: space-around;  
+}
+
+.color-green {
+  background-color: rgba(0, 255, 76, 0.534);
+}
+
+.color-red {
+  background-color: rgba(209, 21, 21, 0.575);
 }

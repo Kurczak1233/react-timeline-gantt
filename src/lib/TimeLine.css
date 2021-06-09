@@ -370,3 +370,31 @@
   display: flex;
   justify-content: space-around;
 }
+
+.bottom-menu--wrapper {
+  display: flex;
+  position: absolute;
+  /* position: fixed; */
+  
+  bottom: 0px;
+  left: 0px;
+  height: 8%;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #333333;
+  width: -webkit-fill-available;
+}
+
+.bottom-menu-buttons-wrapper {
+  display: flex;
+}
+
+.editable-content--highlight-customizable {
+  border: 1px black solid;
+  height: 20px;
+}
+
+.time-line--input {
+  height: 15px;
+  width: 450px;
+}

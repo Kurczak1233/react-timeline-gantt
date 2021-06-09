@@ -101,6 +101,13 @@ class App extends Component {
       timelineMode: 'month',
       links: result.links,
       nonEditableName: false,
+      showIdColumn: true,
+      showNameColumn: true,
+      showFromColumn: true,
+      showToColumn: true,
+      showDurationColumn: true,
+      showPredecessorsColumn: true,
+      showSuccessorsColumn: true,
     };
   }
 
@@ -122,16 +129,12 @@ class App extends Component {
 
   onSelectItem = (item) => {
     console.log(`Select Item ${item}`);
-    console.log(item);
     this.setState({ selectedItem: item });
   };
   
   onUpdateTask = (item, props) => {
     item.start = props.start;
     item.end = props.end;
-    console.log(props.end);
-    console.log(props);
-    console.log(props.start);
         const startingDate = new Date(item.start);
         let dayCount = 0;
         while (item.end > startingDate) {
@@ -193,7 +196,7 @@ class App extends Component {
       duration: differenceInCalendarDays(randomDate, today)
     };
     console.log(newTask);
-    this.setState({ data: [newTask, ...this.state.data] });
+    this.setState({ data: [...this.state.data ,newTask] });
   };
 
   delete = () => {
@@ -212,37 +215,35 @@ class App extends Component {
     }
   };
 
+  setIdColumnVisability = () => {
+    this.setState({ showIdColumn: !this.state.showIdColumn});
+  }
+  setNameColumnVisability = () => {
+    this.setState({ showNameColumn: !this.state.showNameColumn});
+  }
+  setFromColumnVisability = () => {
+    this.setState({ showFromColumn: !this.state.showFromColumn});
+  }
+  setToColumnVisability = () => {
+    this.setState({ showToColumn: !this.state.showToColumn});
+  }
+  setDurationColumnVisability = () => {
+    this.setState({ showDurationColumn: !this.state.showDurationColumn});
+  }
+  setPredecessorsColumnVisability = () => {
+    this.setState({ showPredecessorsColumn: !this.state.showPredecessorsColumn});
+  }
+  setSuccessorsColumnVisability = () => {
+    this.setState({ showSuccessorsColumn: !this.state.showSuccessorsColumn});
+  }
+  
   render() {
     return (
       <div className="app-container">
         <div className="nav-container">
           <div className="mode-container-title">Full Demo</div>
-          <div className="operation-button-container">
-            <div className="operation-button-container">
-              <div className="mode-button" onClick={this.addTask}>
-                <svg height={30} width={30} viewBox="0 0 48 48">
-                  <path
-                    fill="silver"
-                    d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4zm10 22h-8v8h-4v-8h-8v-4h8v-8h4v8h8v4z"
-                  />
-                </svg>
-              </div>
-              <div className="mode-button" onClick={this.delete}>
-                <svg height={30} width={30} viewBox="0 0 48 48">
-                  <path fill="silver" d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4zm10 22H14v-4h20v4z" />
-                </svg>
-              </div>
-            </div>
-          </div>
           <div className="mode-container">
-            <div
-              className="mode-container-item mode-container-item-left"
-              onClick={(e) => this.modeChange('day')}
-              style={this.getbuttonStyle('day')}
-            >
-              Day
-            </div>
-            <div className="mode-container-item" onClick={(e) => this.modeChange('week')} style={this.getbuttonStyle('week')}>
+            <div className="mode-container-item mode-container-item-left" onClick={(e) => this.modeChange('week')} style={this.getbuttonStyle('week')}>
               Week
             </div>
             <div className="mode-container-item" onClick={(e) => this.modeChange('month')} style={this.getbuttonStyle('month')}>
@@ -254,17 +255,6 @@ class App extends Component {
               style={this.getbuttonStyle('year')}
             >
               Year
-            </div>
-            <div
-              className="mode-container-item mode-container-item-editable-toggle"
-              style={{ marginLeft: '20px' }}
-              onClick={() => {
-                this.setState({
-                  nonEditableName: !this.state.nonEditableName
-                });
-              }}
-            >
-              {this.state.nonEditableName ? 'Enable' : 'Disable'} dependencies menu
             </div>
           </div>
         </div>
@@ -283,8 +273,45 @@ class App extends Component {
             nonEditableName={this.state.nonEditableName}
             links={this.state.links}
             submitCallback={this.props.submitCallback}
+            addTask={this.addTask}
+            delete={this.delete}
+            showIdColumn={this.state.showIdColumn}
+            showNameColumn={this.state.showNameColumn}
+            showFromColumn={this.state.showFromColumn}
+            showToColumn={this.state.showToColumn}
+            showDurationColumn={this.state.showDurationColumn}
+            showPredecessorsColumn={this.state.showPredecessorsColumn}
+            showSuccessorsColumn={this.state.showSuccessorsColumn}
           />
         </div>
+        <div className="bottom-menu--wrapper">
+          <div className="footer-buttons--wrapper">
+             <div className="footer-buttons--wrapper">
+                <div className="mode-button" onClick={this.addTask}>
+                  <svg height={30} width={30} viewBox="0 0 48 48">
+                    <path
+                        fill="silver"
+                        d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4zm10 22h-8v8h-4v-8h-8v-4h8v-8h4v8h8v4z"
+                      />
+                  </svg>
+                </div>
+                <div className="mode-button" onClick={this.delete}>
+                  <svg height={30} width={30} viewBox="0 0 48 48">
+                    <path fill="silver" d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4zm10 22H14v-4h20v4z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div className="footer--customizable-menu">
+              <div className={"customization-button mode-container-item-left " + (this.state.showIdColumn ? "color-green" : "color-red")} onClick={this.setIdColumnVisability}>Id</div>
+              <div className={"customization-button " + (this.state.showNameColumn ? "color-green" : "color-red")} onClick={this.setNameColumnVisability}>Name</div>
+              <div className={"customization-button " + (this.state.showFromColumn ? "color-green" : "color-red")} onClick={this.setFromColumnVisability}>From</div>
+              <div className={"customization-button " + (this.state.showToColumn ? "color-green" : "color-red")} onClick={this.setToColumnVisability}>To</div>
+              <div className={"customization-button " + (this.state.showDurationColumn ? "color-green" : "color-red")} onClick={this.setDurationColumnVisability}>Duration</div>
+              <div className={"customization-button " + (this.state.showPredecessorsColumn ? "color-green" : "color-red")} onClick={this.setPredecessorsColumnVisability}>Predecessor</div>
+              <div className={"customization-button mode-container-item-right " + (this.state.showSuccessorsColumn ? "color-green" : "color-red")} onClick={this.setSuccessorsColumnVisability}>Successor</div>
+            </div>
+          </div>
       </div>
     );
   }

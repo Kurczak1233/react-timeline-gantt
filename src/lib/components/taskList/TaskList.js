@@ -49,7 +49,7 @@ export class TaskRow extends Component {
 
   changeStartDate = (value) => {
     var splitDate = value.split('/');
-    var month = splitDate[1] - 1;s
+    var month = splitDate[1] - 1;
     var date = new Date(splitDate[2], month, splitDate[0]);
     this.props.onUpdateTask(this.props.item, { start: date, end: this.props.item.end})
   };
@@ -109,11 +109,15 @@ export class TaskRow extends Component {
     this.setState({isMenuOpened: !this.state.isMenuOpened});
   }
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-
-    let predecessor = this.props.data.find(x=>x.id == this.state.sentSuccessorId)
-    let successor = this.props.data.find(x=>x.id == this.state.sentPredecessorId)
+  handleSubmit = (predecessorId, successorId) => {
+    console.log(predecessorId)
+    console.log(successorId)
+    if(predecessorId === successorId)
+    {
+      return null;
+    }
+    let predecessor = this.props.data.find(x=>x.id == successorId)
+    let successor = this.props.data.find(x=>x.id == predecessorId)
     
     //Anti repeat validation
     if(!successor.predecessors.find(x=>x == predecessor.id))
@@ -125,14 +129,14 @@ export class TaskRow extends Component {
       predecessor.succesors.push(successor.id);
     }
 
-    if(!predecessor.id === successor.id)
-    {
-      predecessor.succesors.push(successor.id);
-    }
-    if(!predecessor.id===successor.id)
-    {
-      succesors.predecessor.push(successor.id);
-    }
+    // if(!predecessor.id === successor.id)
+    // {
+    //   predecessor.succesors.push(successor.id);
+    // }
+    // if(!predecessor.id===successor.id)
+    // {
+    //   succesors.predecessor.push(successor.id);
+    // }
 
     this.props.onStartCreateLink(successor, 'LINK_POS_RIGHT');
     this.props.onFinishCreateLink(predecessor, undefined);
@@ -142,7 +146,6 @@ export class TaskRow extends Component {
     // if(submitCallback){
     //   callback();
     // }
-    this.handleCloseAddDependencyModal();
   }
 
   changeDuration = (days) => {
@@ -159,26 +162,6 @@ export class TaskRow extends Component {
   render() {
     return (
       <React.Fragment>        
-        {/* <Modal
-        isOpen={this.state.isDetailsModalOpen}
-        onRequestClose={this.handleCloseDetailsModal}
-        className="modal-details--custom-style"
-        overlayClassName="overlay"
-        id="detailsModal"
-        ariaHideApp={false}
-        >
-          <div className="details-modal--wrapper">
-            <div>Id: {this.props.item.id}</div>
-            <div>Name: {this.props.item.name}</div>
-            <div>Duration: {this.props.item.duration}</div>
-            <div>Start: {this.props.item.start.toLocaleDateString()}</div>
-            <div>End: {this.props.item.end.toLocaleDateString()}</div>
-            <div>Successors: {this.props.item.succesors.map(x=> <span> {x} </span>)}</div>
-            <div>Predecessors: {this.props.item.predecessors.map(x=> <span> {x} </span>)}</div>
-            <hr />
-            <button type="submit" className="button--common-style" onClick={this.handleCloseDetailsModal}>CLOSE</button>
-          </div>
-        </Modal> */}
         <Modal
         isOpen={this.state.isAddDependencyModalOpen}
         onRequestClose={this.handleCloseAddDependencyModal}
@@ -224,35 +207,29 @@ export class TaskRow extends Component {
         }}
         onClick={(e) => this.props.onSelectItem(this.props.item)}
       >
-        {this.props.nonEditable ? (
           <div className="timeLine-side--header-wrapper">
-          <div className="timeLine-side--header-wrapper--column-width-70 ">{this.props.item.id.substring(0,5)}</div>
-          <ContentEditable width="100%" value={this.props.item.name} index={this.props.index} onChange={this.onChange} />
-          <ContentEditable width="100%" start={this.props.item.start} value={new Date(this.props.item.start).toLocaleDateString("en-US")} index={this.props.index} onChange={this.changeStartDate} />
-          <ContentEditable width="100%" end={this.props.item.end} value={new Date(this.props.item.end).toLocaleDateString("en-US")} index={this.props.index} onChange={this.changeEndDate} />
-          <ContentEditable width="70%" value={this.props.item.duration} index={this.props.index} onChange={this.changeDuration} />
-        </div>
-        ) : (
-          <div className="timeLine-side--header-wrapper">
-            <div className="timeLine-side--header-wrapper--column-width-70 ">{this.props.item.id.substring(0,5)}</div>
-            <ContentEditable width="100%" value={this.props.item.name} index={this.props.index} onChange={this.onChange} />
-            <ContentEditable width="100%" start={this.props.item.start} value={new Date(this.props.item.start).toLocaleDateString('en-GB')} index={this.props.index} onChange={this.changeStartDate} />
-            <ContentEditable width="100%" end={this.props.item.end} value={new Date(this.props.item.end).toLocaleDateString('en-GB')} index={this.props.index} onChange={this.changeEndDate} />
-            <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
+          {this.props.showIdColumn ? (<div className="timeLine-side--header-wrapper--column-width-70 ">{this.props.item.id.substring(0,5)}</div> ) : ''}
+          {this.props.showNameColumn ? ( <ContentEditable width="100%" value={this.props.item.name} index={this.props.index} onChange={this.onChange} />) : ''}
+           {this.props.showFromColumn ? ( <ContentEditable width="100%" start={this.props.item.start} value={new Date(this.props.item.start).toLocaleDateString('en-GB')} index={this.props.index} onChange={this.changeStartDate} />) : ''}
+           {this.props.showToColumn ? ( <ContentEditable width="100%" end={this.props.item.end} value={new Date(this.props.item.end).toLocaleDateString('en-GB')} index={this.props.index} onChange={this.changeEndDate} />) : ''}
+           {this.props.showDurationColumn ? ( <ContentEditable width="70%" value={this.props.item.duration} index={this.props.index} onChange={this.changeDuration} />) : ''}
+           {this.props.showPredecessorsColumn ? ( <ContentEditable width="70%" value='' onChange={(value) => this.handleSubmit(this.props.item.id, value)} />) : ''}
+           {this.props.showSuccessorsColumn ? ( <ContentEditable width="70%" value='' onChange={(value) => this.handleSubmit(value, this.props.item.id)}/>) : ''}
+
+           {/* {this.props.showPredecessorsColumn ? ( <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
               <button id="addChildButton" className="no-decoration" onClick={() => {
-                this.createOptions(this.props.item.id);
-                this.showAddDependencyModal(this.props.item.id, '')
+               this.createOptions(this.props.item.id);
+                this.showAddDependencyModal(this.props.item.id, '') 
               }}><i className="fas fa-plus color-green cursor-pointer" /></button>
-            </div>
+            </div> ) : ''}
+            {this.props.showSuccessorsColumn ? (
             <div className="timeLine-side--header-wrapper--column-width-70 buttons-wrapper">
               <button className="no-decoration" onClick={() => {
                  this.createOptions(this.props.item.id);
                  this.showAddDependencyModal('', this.props.item.id)
                  }}><i className="fas fa-plus color-green cursor-pointer" /></button>
-            </div>
-            <ContentEditable width="70%" value={this.props.item.duration} index={this.props.index} onChange={this.changeDuration} />
+            </div>) : ''} */}
           </div>
-        )}
       </div>
       </React.Fragment>
     );
@@ -290,7 +267,14 @@ export default class TaskList extends Component {
           onFinishCreateLink={this.props.onFinishCreateLink}
           onCreateLink={this.props.onCreateLink}
           data={this.props.data}
-          links={this.props.links}
+          links={this.props.links}          
+          showIdColumn={this.props.showIdColumn}
+          showNameColumn={this.props.showNameColumn}
+          showFromColumn={this.props.showFromColumn}
+          showToColumn={this.props.showToColumn}
+          showDurationColumn={this.props.showDurationColumn}
+          showPredecessorsColumn={this.props.showPredecessorsColumn}
+          showSuccessorsColumn={this.props.showSuccessorsColumn}
         />
       );
     }
@@ -306,36 +290,18 @@ export default class TaskList extends Component {
     this.containerStyle = this.getContainerStyle(data.length);
     
     return (
-      
       <React.Fragment>
-        {this.props.nonEditable ? (
-        <div className="timeLine-side">
-        <div className="timeLine-side-title" style={Config.values.taskList.title.style}>
-          <div className="timeLine-side-title--custom-style">Task menu</div>
-            <div className="timeLine-side--header-wrapper">
-              <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Id</div>
-              <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">Name</div>
-              <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">From</div>
-              <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">To</div>
-              <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Duration</div>
-            </div>
-        </div>
-        <div ref="taskViewPort" className="timeLine-side-task-viewPort" onScroll={this.doScroll}>
-          <div className="timeLine-side-task-container" style={this.containerStyle}>
-            {this.renderTaskRow(data)}
-          </div>
-        </div>
-      </div>) : ( <div className="timeLine-side">
+      <div className="timeLine-side">
           <div className="timeLine-side-title" style={Config.values.taskList.title.style}>
             <div className="timeLine-side-title--custom-style">Task menu</div>
               <div className="timeLine-side--header-wrapper">
-                <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Id</div>
-                <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">Name</div>
-                <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">From</div>
-                <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">To</div>
-                <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Predecessors</div>
-                <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Successors</div>
-                <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Duration</div>
+               {this.props.showIdColumn ? <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Id</div> : ''} 
+               {this.props.showNameColumn ? <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">Name</div> : ''} 
+               {this.props.showFromColumn ? <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">From</div> : ''} 
+               {this.props.showToColumn ? <div className="timeLine-side--header-wrapper--column-width-100 timeLine-side--text-no-wrap">To</div> : ''} 
+               {this.props.showDurationColumn ? <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Duration</div> : ''} 
+               {this.props.showPredecessorsColumn ? <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Predecessors</div> : ''} 
+               {this.props.showSuccessorsColumn ? <div className="timeLine-side--header-wrapper--column-width-70 timeLine-side--text-no-wrap">Successors</div> : ''} 
               </div>
           </div>
           <div ref="taskViewPort" className="timeLine-side-task-viewPort" onScroll={this.doScroll}>
@@ -344,7 +310,6 @@ export default class TaskList extends Component {
             </div>
           </div>
         </div>
-        )}
       </React.Fragment>
     );
   }
